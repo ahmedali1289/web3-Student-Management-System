@@ -1,0 +1,133 @@
+/* spinner loader */
+.spinner-border {
+  display: inline-block;
+  width: 1.5em;
+  height: 1.5em;
+  vertical-align: middle;
+  border: 0.2em solid currentColor;
+  border-top-color: transparent;
+  border-right-color: transparent;
+  border-radius: 50%;
+  -webkit-animation: spinner-border 1s linear infinite;
+  animation: spinner-border 1s linear infinite;
+}
+@-webkit-keyframes spinner-border {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spinner-border {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.cstmBtn {
+  border: none;
+  background: none;
+  color: #fff;
+}
+.cstmButton {
+  position: relative;
+  display: inline-block;
+  padding: 5px 50px;
+  border-radius: 4px;
+  color: #03e9f4;
+  text-decoration: none;
+  text-transform: uppercase;
+  overflow: hidden;
+  margin: 25px;
+  font-family: "Roboto", sans-serif;
+  filter: hue-rotate(0deg);
+  transition: all 0.1s linear;
+}
+.cstmButton span {
+  position: absolute;
+  display: block;
+}
+.cstmButton {
+  border: 1px solid transparent;
+}
+.cstmButton span:nth-child(1) {
+  filter: hue-rotate(0deg);
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #3a86ff);
+  animation: cstmButtonanimate1 3s ease-in-out infinite;
+}
+.cstmButton span:nth-child(2) {
+  filter: hue-rotate(60deg);
+  top: -100%;
+  right: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg, transparent, #3a86ff);
+  animation: cstmButtonanimate2 3s ease-in-out infinite;
+  animation-delay: 0.25s;
+}
+.cstmButton span:nth-child(3) {
+  filter: hue-rotate(120deg);
+  bottom: 0;
+  right: 0;
+  width: 100%;
+
+  background: linear-gradient(270deg, transparent, #3a86ff);
+  animation: cstmButtonanimate3 3s ease-in-out infinite;
+  animation-delay: 0.5s;
+}
+.cstmButton span:nth-child(4) {
+  filter: hue-rotate(300deg);
+  bottom: -100%;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(360deg, transparent, #3a86ff);
+  animation: cstmButtonanimate4 3s ease-in-out infinite;
+  animation-delay: 0.75s;
+}
+@keyframes cstmButtonanimate1 {
+  0% {
+    left: -100%;
+  }
+  50%,
+  100% {
+    left: 100%;
+  }
+}
+@keyframes cstmButtonanimate2 {
+  0% {
+    top: -100%;
+  }
+  50%,
+  100% {
+    top: 100%;
+  }
+}
+@keyframes cstmButtonanimate3 {
+  0% {
+    right: -100%;
+    height: 3px;
+  }
+  50%,
+  100% {
+    height: 2px;
+    right: 100%;
+  }
+}
+@keyframes cstmButtonanimate4 {
+  0% {
+    bottom: -100%;
+  }
+  50%,
+  100% {
+    bottom: 100%;
+  }
+}
