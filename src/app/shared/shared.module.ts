@@ -3,12 +3,18 @@ import { CommonModule } from '@angular/common';
 import { InputComponent } from './input/input.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { ButtonComponent } from './button/button.component';
+import { ImageWrapperComponent } from './image-wrapper/image-wrapper.component';
+import { TextComponent } from './text/text.component';
+import { FlipCardComponent } from './flip-card/flip-card.component';
 
 
 @NgModule({
   declarations: [
     InputComponent,
-    ButtonComponent
+    ButtonComponent,
+    ImageWrapperComponent,
+    TextComponent,
+    FlipCardComponent
   ],
   imports: [
     CommonModule,
@@ -17,7 +23,10 @@ import { ButtonComponent } from './button/button.component';
   ],
   exports:[
     InputComponent,
-    ButtonComponent
+    ButtonComponent,
+    ImageWrapperComponent,
+    TextComponent,
+    FlipCardComponent
   ]
 })
 export class SharedModule { }

@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthGuardService } from '../services/auth.service';
 
 @Component({
   selector: 'app-auth',
@@ -6,6 +8,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./auth.component.scss']
 })
 export class AuthComponent {
+  constructor(private authService:AuthGuardService, private router:Router){}
   public Data:any = {}
   onValueChange(value: any, field:any) {
     this.Data[field] = value.value;
@@ -14,8 +17,7 @@ export class AuthComponent {
     console.log('====================================');
   }
   login(){
-    console.log('====================================');
-    console.log(this.Data,"hjell");
-    console.log('====================================');
+    this.authService.login('dashboard')
+    this.router.navigate(['/dashboard']);
   }
 }

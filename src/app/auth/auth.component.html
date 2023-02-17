@@ -1,7 +1,11 @@
-<div class="container h-100 d-flex justify-content-center align-items-center">
+<div class="container h-100 d-flex justify-content-center align-items-center wallpaper">
   <div class="row">
-    <div class="col-sm-12 mt-3 mb-3">
-      <h1 class="text-center white">Login</h1>
+    <div class="col-sm-12 d-flex justify-content-center">
+      <app-image-wrapper [image]="'../../assets/logo.webp'" [alt]="'Logo'" [width]="200" [height]="50"
+        [objectFit]="'contain'"></app-image-wrapper>
+    </div>
+    <div class="col-sm-12 mt-3">
+      <app-text tag="h5" text="Revolutionize Your Institution with Next-Generation Student Management Tools" class="text-center white"></app-text>
     </div>
     <div class="col-sm-12 mt-3 mb-3">
       <app-input [label]="'Email'" type="text" (valueChange)="onValueChange($event, 'email')"></app-input>

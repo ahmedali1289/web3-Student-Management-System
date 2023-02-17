@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
 import {
   NgbPaginationModule,
   NgbAlertModule, NgbModule,
@@ -7,6 +8,7 @@ import {
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
+import { LayoutModule } from './layout/layout.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -17,6 +19,8 @@ import { SharedModule } from './shared/shared.module';
     NgbAlertModule,
     NgbModule,
     SharedModule,
+    HttpClientModule,
+    LayoutModule
   ],
   providers: [],
   bootstrap: [AppComponent],
