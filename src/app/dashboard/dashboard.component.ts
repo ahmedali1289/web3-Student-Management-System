@@ -10,6 +10,7 @@ export class DashboardComponent {
   headerHeight!: number;
   bodyHeight!: number;
   footerHeight!: number;
+  sidebarExpanded = true;
   constructor() {
     this.updateHeights();
   }

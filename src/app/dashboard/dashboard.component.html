@@ -4,7 +4,7 @@
             <app-header [style.height]="headerHeight + 'px'"></app-header>
         </div>
         <div class="col-sm-3">
-            <app-sidebar></app-sidebar>
+            <app-sidebar [isExpanded]="sidebarExpanded" (toggleSidebar)="sidebarExpanded = !sidebarExpanded"></app-sidebar>
         </div>
         <div class="col-sm-9 height70vh" [style.height]="bodyHeight + 'px'">
             <router-outlet></router-outlet>
