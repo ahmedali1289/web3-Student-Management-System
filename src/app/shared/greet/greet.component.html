@@ -1,0 +1,13 @@
+<div class="container mb-3">
+    <div class="row">
+        <div class="col-sm-12 d-flex justify-content-start align-items-center">
+            <app-text tag="h4" [text]="greeting" class="white me-2"></app-text>
+            <app-image-wrapper *ngIf="greeting == 'Good morning!'" image="../../../assets/sunriseIcon.png" alt="sunrise icon" [style.borderRadius]="10 + 'px'" [style.overflow]="'hidden'" [width]="50" [height]="50"
+                [objectFit]="'cover'"></app-image-wrapper>
+                <app-image-wrapper *ngIf="greeting == 'Good afternoon!'" image="../../../assets/sunsetIcon.png" alt="sunset icon" [style.borderRadius]="10 + 'px'" [style.overflow]="'hidden'" [width]="50" [height]="50"
+                [objectFit]="'cover'"></app-image-wrapper>
+                <app-image-wrapper *ngIf="greeting == 'Good evening!'" image="../../../assets/moonIcon.png" alt="moon icon" [style.borderRadius]="10 + 'px'" [style.overflow]="'hidden'" [width]="50" [height]="50"
+                [objectFit]="'cover'"></app-image-wrapper>
+        </div>
+    </div>
+</div>

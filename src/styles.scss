@@ -38,32 +38,36 @@ body {
     width: 30vw;
     top: 0;
     z-index: 0;
+    will-change: border-radius, transform, opacity;
   }
   #topProp {
-    -webkit-animation: pulse 10s infinite, bounce 3s infinite;
-    -moz-animation: pulse 10s infinite, bounce 3s infinite;
-    -o-animation: pulse 10s infinite, bounce 3s infinite;
-    animation: pulse 10s infinite, bounce 3s infinite;
+    -webkit-animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
+    -moz-animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
+    -o-animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
+    animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
     left: 0;
     &::after,
     &::before {
       content: "";
       height: 200px;
-      width: 200px;
+      width: 50%;
       border-radius: 100%;
       position: absolute;
-      filter: blur(110px);
+      filter: blur(100px);
     }
     &::after {
       background-image: linear-gradient(
         -225deg,
-        #3498db 0,
-        #9b59b6 29%,
-        #e74c3c 67%,
-        #f1c40f 100%
+        #060047 0,
+        #B3005E 29%,
+        #E90064 67%,
+        #FF5F9E 100%
       );
       background-size: 500% 500%;
-      animation: bg 1s ease-in-out infinite;
+      -webkit-animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
+    -moz-animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
+    -o-animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
+    animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
       width: 100%;
       bottom: 10%;
       left: 40%;
@@ -84,19 +88,19 @@ body {
     }
   }
   #bottomProp {
-    -webkit-animation: pulse 10s infinite, bounce 3s infinite;
-    -moz-animation: pulse 10s infinite, bounce 3s infinite;
-    -o-animation: pulse 10s infinite, bounce 3s infinite;
-    animation: pulse 10s infinite, bounce 3s infinite;
+    -webkit-animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
+    -moz-animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
+    -o-animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
+    animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
     right: 0;
     &::after,
     &::before {
       content: "";
       height: 200px;
-      width: 200px;
+      width: 50%;
       border-radius: 100%;
       position: absolute;
-      filter: blur(110px);
+      filter: blur(100px);
     }
     &::after {
       background-image: linear-gradient(
@@ -107,7 +111,10 @@ body {
         #f1c40f 100%
       );
       background-size: 500% 500%;
-      animation: bg 3s ease-in-out infinite;
+      -webkit-animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
+    -moz-animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
+    -o-animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
+    animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
       width: 100%;
       top: 10%;
       right: 10%;
@@ -147,7 +154,47 @@ body {
 .height70vh{
   height: 70vh;
 }
+.no-border{
+  border: 0;
+  border-color: transparent;
+}
+.no-textDecoration{
+  text-decoration: none;
+}
+// .slider-thumb::before {
+// 	position: absolute;
+//     content: "";
+//     left: 30%;
+//     top: 20%;
+//     width: 50%;
+//     height: 50%;
+//     background-image: linear-gradient(-225deg, #3498db 0, #9b59b6 29%, #e74c3c 67%, #f1c40f 100%);
+//     border-radius: 62% 47% 82% 35%/45% 45% 80% 66%;
+//     background-size: 500% 500%;
+//     will-change: border-radius, transform, opacity;
+//     animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
+//     display: block;
+//     z-index: -1;
+//     -webkit-animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
+// }
 // key frames
+@keyframes sliderShape{
+  0%,100%{
+  border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+    transform: translate3d(0,0,0) rotateZ(0.01deg);
+  }
+  34%{
+      border-radius: 70% 30% 46% 54% / 30% 29% 71% 70%;
+    transform:  translate3d(0,5px,0) rotateZ(0.01deg);
+  }
+  50%{
+    transform: translate3d(0,0,0) rotateZ(0.01deg);
+  }
+  67%{
+    border-radius: 100% 60% 60% 100% / 100% 100% 60% 60% ;
+    transform: translate3d(0,-3px,0) rotateZ(0.01deg);
+  }
+}
 @keyframes pulse {
   from {
     transform: scale(1);

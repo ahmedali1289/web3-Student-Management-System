@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { ApiService } from '../services/api.service';
 import { AuthGuardService } from '../services/auth.service';
 
 @Component({
@@ -8,7 +9,7 @@ import { AuthGuardService } from '../services/auth.service';
   styleUrls: ['./auth.component.scss']
 })
 export class AuthComponent {
-  constructor(private authService:AuthGuardService, private router:Router){}
+  constructor(private authService:AuthGuardService, private router:Router, private api:ApiService){}
   public Data:any = {}
   onValueChange(value: any, field:any) {
     this.Data[field] = value.value;
@@ -17,7 +18,12 @@ export class AuthComponent {
     console.log('====================================');
   }
   login(){
-    this.authService.login('dashboard')
-    this.router.navigate(['/dashboard']);
+    this.api.postMethod('http://localhost:3000/api/login', this.Data, false).subscribe(res=>{
+      console.log('====================================');
+      console.log(res);
+      console.log('====================================');
+    })
+    // this.router.navigate(['/dashboard']);
+    // this.authService.login('dashboard')
   }
 }
