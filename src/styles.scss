@@ -2,6 +2,10 @@
 
 /* Importing Bootstrap SCSS file. */
 @import "bootstrap/scss/bootstrap";
+// regular style toast
+@import 'ngx-toastr/toastr';
+// boostrap 5
+// @import 'ngx-toastr/toastr-bs5-alert';
 :root {
   --body-background: #171717;
 }

@@ -9,9 +9,10 @@ export class AuthGuardService {
   getToken() {
     return !!localStorage.getItem("access_token");
   }
-  login(value:string){
-    localStorage.setItem('token','token')
+  login(value:string, token:string, routes:any){
+    localStorage.setItem('token',token)
     localStorage.setItem('role',value)
+    localStorage.setItem('routes',JSON.stringify(routes))
   }
   isLoggedIn(): boolean {
     let loggedIn: boolean = false;

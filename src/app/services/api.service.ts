@@ -11,20 +11,20 @@ export class ApiService {
   postMethod(link: string, data: any, token: boolean): Observable<any> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer token`,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     });
 
-    return this.http.post(link, data).pipe(
+    return this.http.post(link,{}).pipe(
       catchError(this.handleError)
     );
   }
 
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
-      console.error('An error occurred:', error.error.message);
+      console.error(error.error);
     } else {
-      console.error(`Backend returned code ${error.status}, body was: ${error.error}`);
+      console.error(error.error);
     }
-    return throwError('Something bad happened; please try again later.');
+    return throwError(error.error);
   }
 }
