@@ -517,6 +517,18 @@ export class ContractService {
       }
     }
   };
+  async getCourses() {
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+      const result = await contract;
+      const studetns = await result['viewCourses']()
+      console.log(result['viewCourses'](),'resukt',studetns);
+    } catch (error) {
+      console.log("Error calling contract function:", error);
+    }
+  }
   async getStudents() {
     try {
       const provider = new ethers.providers.Web3Provider(window.ethereum);

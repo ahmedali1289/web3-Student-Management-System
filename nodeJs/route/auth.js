@@ -66,18 +66,21 @@ router.post('/login', async (req, res) => {
             routes = [
                 {
                     route: 'over-view',
-                    name: 'Over View'
+                    name: 'Over View',
+                    icon:'fa-house'
                 },
                 {
                     name: 'Courses',
                     children: [
                         {
                             route: 'courses',
-                            name: 'Courses'
+                            name: 'Courses',
+                            icon:'fa-books'
                         },
                         {
-                            route: 'add-course',
-                            name: 'Add Course'
+                            route: 'courses/add-course',
+                            name: 'Add Course',
+                            icon:'fa-books-medical'
                         },
                     ]
                 },
@@ -86,11 +89,14 @@ router.post('/login', async (req, res) => {
                     children: [
                         {
                             route: 'students',
-                            name: 'Students'
+                            name: 'Students',
+                            icon: 'fa-user-graduate'
                         },
                         {
-                            route: 'add-student',
-                            name: 'Add Student'
+                            route: 'students/add-student',
+                            name: 'Add Student',
+                            icon: 'fa-add-user'
+
                         },
                     ]
                 },
@@ -99,11 +105,13 @@ router.post('/login', async (req, res) => {
                     children: [
                         {
                             route: 'teachers',
-                            name: 'Teachers'
+                            name: 'Teachers',
+                            icon: 'fa-user-graduate'
                         },
                         {
-                            route: 'add-teacher',
-                            name: 'Add Teacher'
+                            route: 'teachers/add-teacher',
+                            name: 'Add Teacher',
+                            icon: 'fa-add-user'
                         },
                     ]
                 }
@@ -116,7 +124,8 @@ router.post('/login', async (req, res) => {
                     children: [
                         {
                             route: 'courses',
-                            name: 'Courses'
+                            name: 'Courses',
+                            icon:'fa-books'
                         }
                     ]
                 },
@@ -125,7 +134,8 @@ router.post('/login', async (req, res) => {
                     children: [
                         {
                             route: 'students',
-                            name: 'Students'
+                            name: 'Students',
+                            icon: 'fa-user-graduate'
                         }
                     ]
                 }
@@ -138,7 +148,8 @@ router.post('/login', async (req, res) => {
                     children: [
                         {
                             route: 'courses',
-                            name: 'Courses'
+                            name: 'Courses',
+                            icon:'fa-books'
                         }
                     ]
                 }
