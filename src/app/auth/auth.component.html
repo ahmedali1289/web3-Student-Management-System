@@ -7,7 +7,13 @@
     <div class="col-sm-12 mt-3">
       <app-text tag="h5" text="Revolutionize Your Institution with Next-Generation Student Management Tools" class="text-center white"></app-text>
     </div>
-    <div class="col-sm-12 mt-3 mb-3">
+    <div class="col-sm-12">
+      <app-form [fields]="['Email', 'Password']" [fieldTypes]="['text', 'password']" [error]="true"></app-form>
+    </div>
+    <div class="col-sm-12 mt-3 mb-3 d-flex justify-content-center align-items-center">
+      <app-button text="Login" [onClick]="login.bind(this)"></app-button>
+    </div>
+    <!-- <div class="col-sm-12 mt-3 mb-3">
       <app-input [label]="'Email'" type="text" (valueChange)="onValueChange($event, 'email')"></app-input>
     </div>
     <div class="col-sm-12 mt-3 mb-3">
@@ -15,6 +21,6 @@
     </div>
     <div class="col-sm-12 mt-3 mb-3 d-flex justify-content-center align-items-center">
       <app-button text="Login" [onClick]="login.bind(this)"></app-button>
-    </div>
+    </div> -->
   </div>
 </div>

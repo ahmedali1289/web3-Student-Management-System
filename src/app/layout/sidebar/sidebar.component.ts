@@ -13,7 +13,6 @@ export class SidebarComponent {
 
   handleSidebarToggle = () => this.toggleSidebar.emit(!this.isExpanded);
   ngOnInit(){
-    console.log(this.sidebar)
     this.observe()
     if(localStorage.getItem('routes')){
       const route:any = localStorage.getItem('routes')

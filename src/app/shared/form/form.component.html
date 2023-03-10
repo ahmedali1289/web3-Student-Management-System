@@ -1,0 +1,28 @@
+<form [formGroup]="formGroup">
+    <ng-container *ngFor="let field of fields; let i = index">
+        <div class="form__group field">
+            <div *ngIf="fieldTypes[i] == 'password'">
+                <i class="fa {{show ? 'fa-eye' : 'fa-eye-slash'}}" (click)="show = !show"></i>
+            </div>
+            <input type="{{fieldTypes[i] == 'password' && show ? 'text' : fieldTypes[i]}}" class="form__field"
+                placeholder="{{field}}" formControlName="{{field}}" id='{{field}}' />
+            <label for="{{field}}" class="form__label">{{field}}</label>
+            <ng-container
+                *ngIf="formGroup.get(field)?.errors && formGroup.get(field)?.errors?.['email'] && formGroup.get(field)?.touched">
+                <div class="error-msg"> Please enter a valid {{field}}. </div>
+            </ng-container>
+            <ng-container
+                *ngIf="formGroup.get(field)?.errors && formGroup.get(field)?.errors?.['required'] && formGroup.get(field)?.touched">
+                <div class="error-msg">
+                    Please enter a {{field}}.
+                </div>
+            </ng-container>
+            <ng-container
+                *ngIf="formGroup.get(field)?.errors && formGroup.get(field)?.errors?.['pattern'] && formGroup.get(field)?.touched">
+                <div class="error-msg">
+                    Please enter a valid {{field}}.
+                </div>
+            </ng-container>
+        </div>
+    </ng-container>
+</form>
