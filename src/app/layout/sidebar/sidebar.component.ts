@@ -20,6 +20,9 @@ export class SidebarComponent {
     }
   }
   constructor(private cd:ChangeDetectorRef){}
+  header(item:string){    
+    UniversalService.header.next(item)
+  }
   async observe() {
     UniversalService.sidebar.subscribe((res: boolean) => {
       if (res) {

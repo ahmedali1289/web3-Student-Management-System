@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { ethers } from 'ethers';
-const CONTRACT_ADDRESS = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512';
+import { UniversalService } from './universal.service';
+const CONTRACT_ADDRESS = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
 const ABI = [
   {
     "inputs": [],
@@ -498,8 +500,8 @@ declare let window: any;
   providedIn: 'root'
 })
 export class ContractService {
-  constructor() { }
-  async connectWallet()  {
+  constructor(private router:Router) { }
+  async connectWallet() {
     if (window.ethereum) {
       try {
         const accounts = await window.ethereum.request({
@@ -523,8 +525,23 @@ export class ContractService {
       const signer = provider.getSigner();
       const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
       const result = await contract;
-      const studetns = await result['viewCourses']()
-      console.log(result['viewCourses'](),'resukt',studetns);
+      const courses = await result['viewCourses']()
+      return courses;
+    } catch (error) {
+      console.log("Error calling contract function:", error);
+    }
+  }
+  async addCourse(data:any) {
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+      const result = await contract;
+      const courses = await result['addCourse'](data?.courseName, data?.courseFee)
+      await courses.wait();
+      this.router.navigateByUrl('dashboard/courses')
+      await UniversalService.header.next("Courses")
+      await UniversalService.AddCourse.next(true)
     } catch (error) {
       console.log("Error calling contract function:", error);
     }
@@ -536,21 +553,22 @@ export class ContractService {
       const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
       const result = await contract;
       const studetns = await result['getAllStudents']()
-      console.log(result['getAllStudents'](),'resukt',studetns);
+      console.log(result['getAllStudents'](), 'resukt', studetns);
     } catch (error) {
       console.log("Error calling contract function:", error);
     }
   }
-  async addStudent() {
-    console.log("helo")
+  async addStudent(name:string,address:string,age:number,number:number) {
     try {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
       const result = await contract;
-      const studetns = await result['addStudent']('aashmed23','gulshan',223,23123)
-      console.log(result['getAllStudents'](),'resukt',studetns);
-      this.getStudents()
+      const students = await result['addStudent'](name,address,age,number)
+      await students.wait();
+      this.router.navigateByUrl('dashboard/students')
+      await UniversalService.header.next("Students")
+      await UniversalService.AddStudent.next(true)
     } catch (error) {
       console.log("Error calling contract function:", error);
     }

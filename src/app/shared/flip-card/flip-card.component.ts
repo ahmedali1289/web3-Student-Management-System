@@ -1,4 +1,4 @@
-import { Component, Input, ElementRef, Renderer2 } from '@angular/core';
+import { Component, Input, ElementRef, Renderer2, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'app-flip-card',
@@ -17,5 +17,11 @@ ngOnInit() {
   const myDiv = this.elRef.nativeElement.querySelector('.flip-card');
   this.width = myDiv.offsetWidth;
   this.height = myDiv.offsetHeight;
+}
+ngOnChanges(changes: SimpleChanges) {
+  console.log(changes, this.text,"hellorees");
+  
+  if (changes) {
+  }
 }
 }

@@ -5,6 +5,9 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const validator = require('validator');
 const crypto = require('crypto');
+const dotenv = require('dotenv');
+dotenv.config();
+const config = require('../config/config');
 router.post('/signup', async (req, res) => {
     try {
         const email = req.query.email;
@@ -70,92 +73,46 @@ router.post('/login', async (req, res) => {
                     icon:'fa-house'
                 },
                 {
+                    route: 'courses',
                     name: 'Courses',
-                    children: [
-                        {
-                            route: 'courses',
-                            name: 'Courses',
-                            icon:'fa-books'
-                        },
-                        {
-                            route: 'courses/add-course',
-                            name: 'Add Course',
-                            icon:'fa-books-medical'
-                        },
-                    ]
+                    icon:'fa-books'
                 },
                 {
+                    route: 'students',
                     name: 'Students',
-                    children: [
-                        {
-                            route: 'students',
-                            name: 'Students',
-                            icon: 'fa-user-graduate'
-                        },
-                        {
-                            route: 'students/add-student',
-                            name: 'Add Student',
-                            icon: 'fa-add-user'
-
-                        },
-                    ]
+                    icon:'fa-user-graduate'
                 },
                 {
+                    route: 'teachers',
                     name: 'Teachers',
-                    children: [
-                        {
-                            route: 'teachers',
-                            name: 'Teachers',
-                            icon: 'fa-user-graduate'
-                        },
-                        {
-                            route: 'teachers/add-teacher',
-                            name: 'Add Teacher',
-                            icon: 'fa-add-user'
-                        },
-                    ]
+                    icon:'fa-user-graduate'
                 }
             ]
         }
         if (user.role == 'teacher') {
             routes = [
                 {
+                    route: 'courses',
                     name: 'Courses',
-                    children: [
-                        {
-                            route: 'courses',
-                            name: 'Courses',
-                            icon:'fa-books'
-                        }
-                    ]
+                    icon:'fa-books'
                 },
                 {
+                    route: 'students',
                     name: 'Students',
-                    children: [
-                        {
-                            route: 'students',
-                            name: 'Students',
-                            icon: 'fa-user-graduate'
-                        }
-                    ]
-                }
+                    icon:'fa-user-graduate'
+                },
             ]
         }
         if (user.role == 'student') {
             routes = [
                 {
+                    route: 'courses',
                     name: 'Courses',
-                    children: [
-                        {
-                            route: 'courses',
-                            name: 'Courses',
-                            icon:'fa-books'
-                        }
-                    ]
-                }
+                    icon:'fa-books'
+                },
             ]
         }
-        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
+        const token = jwt.sign({ userId: user._id }, config.get(process.env.NODE_ENV).SECRET);
         await user.save();
         res.json({ status: "Successfully login", token: token, user: user, route:routes });
     } catch (error) {

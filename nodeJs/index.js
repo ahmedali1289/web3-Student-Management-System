@@ -4,13 +4,15 @@ const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const authRoutes = require('./route/auth');
 const cors = require('cors');
+
 dotenv.config();
+const config = require('./config/config');
 
 const app = express();
 app.use(cors({
-    origin: 'http://localhost:4200',
-    methods: ['GET', 'POST'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+  origin: 'http://localhost:4200',
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 // Middleware
 app.use(bodyParser.json());
@@ -20,12 +22,12 @@ app.use('/api/auth', authRoutes);
 
 // Connect to MongoDB
 mongoose
-    .connect(process.env.MONGODB_URL, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    })
-    .then(() => console.log('MongoDB connected'))
-    .catch((error) => console.error(error));
+  .connect(config.get(process.env.NODE_ENV).MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log('MongoDB connected'))
+  .catch((error) => console.error(error));
 
 // Start the server
 const PORT = process.env.PORT || 3000;

@@ -4,8 +4,10 @@
     <span></span>
     <span></span>
     <span></span>
-    <!-- <div className="spinner-border spinner-border-sm"></div> -->
-    <button class="cstmBtn" (click)="onClickHandler()">
+    <button class="cstmBtn" (click)="onClickHandler()" *ngIf="!content">
+      {{text}}
+    </button>
+    <button class="cstmBtn" (click)="openModal()" *ngIf="content">
       {{text}}
     </button>
   </div>
