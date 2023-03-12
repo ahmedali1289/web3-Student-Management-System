@@ -7,6 +7,8 @@ import { TextComponent } from './text/text.component';
 import { FlipCardComponent } from './flip-card/flip-card.component';
 import { GreetComponent } from './greet/greet.component';
 import { FormComponent } from './form/form.component';
+import { FilterPipe } from './tableFilter.pipe';
+import { LoaderComponent } from './loader/loader.component';
 
 
 @NgModule({
@@ -16,7 +18,9 @@ import { FormComponent } from './form/form.component';
     TextComponent,
     FlipCardComponent,
     GreetComponent,
-    FormComponent
+    FormComponent,
+    FilterPipe,
+    LoaderComponent
   ],
   imports: [
     CommonModule,
@@ -29,7 +33,9 @@ import { FormComponent } from './form/form.component';
     TextComponent,
     FlipCardComponent,
     GreetComponent,
-    FormComponent
+    FormComponent,
+    FilterPipe,
+    LoaderComponent
 
   ]
 })

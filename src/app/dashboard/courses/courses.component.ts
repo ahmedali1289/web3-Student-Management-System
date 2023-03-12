@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ContractService } from 'src/app/services/contract.service';
+import { LoaderService } from 'src/app/services/loader.service';
 import { UniversalService } from 'src/app/services/universal.service';
 export interface Course {
   id: number;
@@ -14,12 +15,15 @@ export interface Course {
 })
 
 export class CoursesComponent {
+  searchInput!:string;
+  p: number = 1;
   data: Course[]=[];
   ngOnInit(): void {
     this.observe()
   }
   constructor(private contract: ContractService, private cd:ChangeDetectorRef,
     private router:Router) {
+    LoaderService.loader.next(true)
     this.getCourses()
   }
   async getCourses() {
@@ -31,7 +35,7 @@ export class CoursesComponent {
         fee: course.fee.toNumber(),
       })
     })
-
+    await LoaderService.loader.next(false)
   }
   route(){
     UniversalService.header.next('Add Course')

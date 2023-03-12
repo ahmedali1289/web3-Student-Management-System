@@ -9,5 +9,6 @@ export class UniversalService {
   public static sidebar: Subject<any> = new Subject<any>();
   public static AddCourse: Subject<any> = new Subject<any>();
   public static AddStudent: Subject<any> = new Subject<any>();
+  public static AddTeachers: Subject<any> = new Subject<any>();
   constructor() { }
 }

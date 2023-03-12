@@ -5,7 +5,7 @@
         </div>
         <div [ngClass]="sidebarExpanded ? 'col-sm-10' : 'col-sm-11'" >
             <app-header [style.height]="headerHeight + 'px'"></app-header>
-            <div [style.height]="bodyHeight + 'px'">
+            <div [style.height]="bodyHeight + 'px'" style="overflow-y: auto;">
                 <router-outlet></router-outlet>
             </div>
             <app-footer [style.height]="footerHeight + 'px'"></app-footer>

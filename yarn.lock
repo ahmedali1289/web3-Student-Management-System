@@ -6806,6 +6806,13 @@ neo-async@^2.6.2:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
+ngx-pagination@^6.0.3:
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/ngx-pagination/-/ngx-pagination-6.0.3.tgz#083f77a5c9c3ebf5800fb57a280da71aacc10a18"
+  integrity sha512-lONjTQ7hFPh1SyhwDrRd5ZwM4NMGQ7bNR6vLrs6mrU0Z8Q1zCcWbf/pvyp4DOlGyd9uyZxRy2wUsSZLeIPjbAw==
+  dependencies:
+    tslib "^2.3.0"
+
 ngx-toastr@^16.0.2:
   version "16.1.0"
   resolved "https://registry.yarnpkg.com/ngx-toastr/-/ngx-toastr-16.1.0.tgz#cd0264e8f48cddc802dafb6e8413a10465df6b01"

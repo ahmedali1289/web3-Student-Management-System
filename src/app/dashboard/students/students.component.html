@@ -1,29 +1,49 @@
 <div class="container ps-5 pe-5 pt-5 pb-5 text-center">
-    <div class="row">
-        <div class="col-sm-12 d-flex justify-content-end w-100">
-            <app-button text="Add Student" [onClick]="route.bind(this)"></app-button>
+  <div class="row">
+    <div class="col-sm-12 d-flex w-100">
+      <div class="row w-100 align-items-center justify-content-between">
+        <div class="col-sm-6 d-flex justify-content-start">
+          <input class="searchInp" type="text" [(ngModel)]="searchInput" placeholder="Search">
         </div>
-        <div class="col-sm-12">
-            <table class="table table-responsive table-dark white hover">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Address</th>
-                    <th>Age</th>
-                    <th>Number</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let row of data">
-                    <td>{{ row.id }}</td>
-                    <td>{{ row.name }}</td>
-                    <td>{{ row.address }}</td>
-                    <td>{{ row.age }}</td>
-                    <td>{{ row.number }}</td>
-                  </tr>
-                </tbody>
-              </table>
+        <div class="col-sm-6 d-flex justify-content-end">
+          <app-button text="Add Teacher" [onClick]="route.bind(this)"></app-button>
         </div>
+      </div>
     </div>
+    <div class="col-sm-12">
+      <table class="table table-responsive table-dark white hover">
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Age</th>
+            <th>Number</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngIf="(data | filter: searchInput)?.length; else noData">
+            <tr *ngFor="let row of data | filter: searchInput | paginate: { itemsPerPage: 10, currentPage: p }">
+              <td>{{ row.id }}</td>
+              <td>{{ row.name }}</td>
+              <td>{{ row.address }}</td>
+              <td>{{ row.age }}</td>
+              <td>{{ row.number }}</td>
+            </tr>
+          </ng-container>
+          <ng-template #noData>
+            <tr *ngIf="data?.length">
+              <td colspan="5" class="text-center white">No Matching Data Available</td>
+            </tr>
+          </ng-template>
+          <tr *ngIf="!data?.length">
+            <td colspan="5" class="text-center white">No Data Available</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-sm-12 d-flex justify-content-end align-items-center">
+      <pagination-controls (pageChange)="p = $event"></pagination-controls>
+    </div>
+  </div>
 </div>

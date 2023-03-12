@@ -6,6 +6,8 @@ import { CoursesComponent } from './courses.component';
 import { AddcourseComponent } from './addcourse/addcourse.component';
 import { DataTablesModule } from 'angular-datatables';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 
 @NgModule({
@@ -17,7 +19,10 @@ import { SharedModule } from 'src/app/shared/shared.module';
     CommonModule,
     CoursesRoutingModule,
     DataTablesModule,
-    SharedModule
+    SharedModule,
+    ReactiveFormsModule,
+    FormsModule,
+    NgxPaginationModule
   ]
 })
 export class CoursesModule { }

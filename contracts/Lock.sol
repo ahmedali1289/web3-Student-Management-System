@@ -4,11 +4,23 @@ pragma solidity ^0.8.0;
 contract StudentContract {
     address admin;
     StudentData[] public students;
+    TeacherData[] public teachers;
     Course[] public courses;
     mapping(uint256 => uint256) public studentPayments;
     struct StudentData {
         string name;
         string studentaddress;
+        uint256 age;
+        uint256 number;
+        uint256 id;
+        uint256[] courses;
+        uint256[] grades;
+        uint256[] attendance;
+        bool feeStatus;
+    }
+    struct TeacherData {
+        string name;
+        string teacheraddress;
         uint256 age;
         uint256 number;
         uint256 id;
@@ -23,8 +35,10 @@ contract StudentContract {
         uint256 fee;
     }
     uint256 public studentId;
+    uint256 public teacherId;
     uint256 public courseId;
     event Success(string message);
+
     constructor() public {
         admin = msg.sender;
     }
@@ -117,6 +131,59 @@ contract StudentContract {
         emit Success("Student add successfully!");
     }
 
+    function addTeacher(
+        string memory teacherName,
+        string memory _teacherAddress,
+        uint256 teacherAge,
+        uint256 teacherNumber
+    ) public {
+        bytes32 teacherHash = keccak256(
+            abi.encodePacked(
+                teacherName,
+                _teacherAddress,
+                teacherAge,
+                teacherNumber
+            )
+        );
+        uint256 index = teachers.length;
+
+        // Check if a teacher with the same name, address, age, and number already exists
+        for (uint256 i = 0; i < index; i++) {
+            if (
+                keccak256(
+                    abi.encodePacked(
+                        teachers[i].name,
+                        teachers[i].teacheraddress,
+                        teachers[i].age,
+                        teachers[i].number
+                    )
+                ) == teacherHash
+            ) {
+                require(
+                    false,
+                    "A teacher with the same name, address, age, and number already exists."
+                );
+            }
+        }
+
+        // Add the teacher to the teachers array
+        teacherId++;
+        teachers.push(
+            TeacherData({
+                id: teacherId,
+                name: teacherName,
+                teacheraddress: _teacherAddress,
+                age: teacherAge,
+                number: teacherNumber,
+                courses: new uint256[](0),
+                grades: new uint256[](0),
+                attendance: new uint256[](0),
+                feeStatus: false
+            })
+        );
+        emit Success("Teacher add successfully!");
+    }
+
     function assignCourse(uint256 _studentId, uint256 _courseId) public {
         uint256 studentIndex;
         for (uint256 i = 0; i < students.length; i++) {
@@ -172,6 +239,31 @@ contract StudentContract {
         return students;
     }
 
+    function getAllTeachers() public view returns (TeacherData[] memory) {
+        return teachers;
+    }
+    function getTeacher(uint256 _teacherId)
+        public
+        view
+        returns (TeacherData memory)
+    {
+        for (uint256 i = 0; i < teachers.length; i++) {
+            if (teachers[i].id == _teacherId) {
+                TeacherData memory teacherData = TeacherData({
+                    id: teachers[i].id,
+                    name: teachers[i].name,
+                    teacheraddress: teachers[i].teacheraddress,
+                    age: teachers[i].age,
+                    number: teachers[i].number,
+                    courses: teachers[i].courses,
+                    grades: teachers[i].grades,
+                    attendance: teachers[i].attendance,
+                    feeStatus: teachers[i].feeStatus
+                });
+                return (teacherData);
+            }
+        }
+    }
     function getStudent(uint256 _studentId)
         public
         view
@@ -236,35 +328,35 @@ contract StudentContract {
     }
 
     function payCoursesFees(uint256 _studentId) public payable {
-    uint256 totalFee = 0;
-    uint256 studentIndex;
-    for (uint256 i = 0; i < students.length; i++) {
-        if (students[i].id == _studentId) {
-            studentIndex = i;
-            break;
-        }
-    }
-
-    // Calculate the total fee
-    for (uint256 j = 0; j < students[studentIndex].courses.length; j++) {
-        uint256 localCourseId = students[studentIndex].courses[j];
-        for (uint256 k = 0; k < courses.length; k++) {
-            if (courses[k].id == localCourseId) {
-                totalFee += courses[k].fee;
+        uint256 totalFee = 0;
+        uint256 studentIndex;
+        for (uint256 i = 0; i < students.length; i++) {
+            if (students[i].id == _studentId) {
+                studentIndex = i;
                 break;
             }
         }
-    }
-    require(msg.value == totalFee, "Incorrect fee amount");
 
-    // Update fee status
-    if (msg.value >= totalFee) {
-        students[studentIndex].feeStatus = true;
-        emit Success("Payment done successfully!");
-    } else {
-        students[studentIndex].feeStatus = false;
+        // Calculate the total fee
+        for (uint256 j = 0; j < students[studentIndex].courses.length; j++) {
+            uint256 localCourseId = students[studentIndex].courses[j];
+            for (uint256 k = 0; k < courses.length; k++) {
+                if (courses[k].id == localCourseId) {
+                    totalFee += courses[k].fee;
+                    break;
+                }
+            }
+        }
+        require(msg.value == totalFee, "Incorrect fee amount");
+
+        // Update fee status
+        if (msg.value >= totalFee) {
+            students[studentIndex].feeStatus = true;
+            emit Success("Payment done successfully!");
+        } else {
+            students[studentIndex].feeStatus = false;
+        }
     }
-}
 
     function viewCourses() public view returns (Course[] memory) {
         return (courses);

@@ -170,6 +170,26 @@ body {
 .h100vh{
   height: 100vh;
 }
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+.searchInp{
+  background: none;
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid #fff;
+  color: #fff;
+  padding: 10px;
+  outline: none;
+}
 // .slider-thumb::before {
 // 	position: absolute;
 //     content: "";
