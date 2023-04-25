@@ -8,7 +8,9 @@ const routes: Routes = [{ path: '', component: DashboardComponent, children: [
   { path: 'over-view', component: OverviewComponent },
   { path: 'students', loadChildren: () => import('./students/students.module').then(m => m.StudentsModule) },
   { path: 'courses', loadChildren: () => import('./courses/courses.module').then(m => m.CoursesModule) },
-  { path: 'teachers', loadChildren: () => import('./teachers/teachers.module').then(m => m.TeachersModule) }
+  { path: 'teachers', loadChildren: () => import('./teachers/teachers.module').then(m => m.TeachersModule) },
+  { path: 'assign-courses', loadChildren: () => import('./assigned-course/assigned-course.module').then(m => m.AssignedCourseModule) },
+  { path: 'change-password', loadChildren: () => import('./change-password/change-password.module').then(m => m.ChangePasswordModule) }
 ]}]
 
 @NgModule({

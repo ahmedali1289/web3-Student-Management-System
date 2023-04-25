@@ -6,7 +6,7 @@
           <input class="searchInp" type="text" [(ngModel)]="searchInput" placeholder="Search">
         </div>
         <div class="col-sm-6 d-flex justify-content-end">
-          <app-button text="Add Teacher" [onClick]="route.bind(this)"></app-button>
+          <app-button text="Add Course" [onClick]="route.bind(this)"></app-button>
         </div>
       </div>
     </div>
@@ -29,7 +29,7 @@
           </ng-container>
           <ng-template #noData>
             <tr *ngIf="data?.length">
-              <td colspan="5" class="text-center white">No Matching Data Available</td>
+              <td colspan="6" class="text-center white">No Matching Data Available</td>
             </tr>
           </ng-template>
           <tr *ngIf="!data?.length">

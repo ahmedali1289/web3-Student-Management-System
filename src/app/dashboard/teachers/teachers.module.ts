@@ -7,6 +7,8 @@ import { AddteacherComponent } from './addteacher/addteacher.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { NgbModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 
 @NgModule({
@@ -20,7 +22,10 @@ import { NgxPaginationModule } from 'ngx-pagination';
     SharedModule,
     ReactiveFormsModule,
     FormsModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    NgbTooltipModule,
+    NgSelectModule,
+    NgbModule
   ]
 })
 export class TeachersModule { }

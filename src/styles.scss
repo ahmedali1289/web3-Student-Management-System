@@ -4,11 +4,13 @@
 @import "bootstrap/scss/bootstrap";
 // regular style toast
 @import 'ngx-toastr/toastr';
-// boostrap 5
-// @import 'ngx-toastr/toastr-bs5-alert';
+// ng select styling
+@import "~@ng-select/ng-select/themes/material.theme.css";
+
 :root {
   --body-background: #171717;
 }
+
 // body styling
 body {
   // background-color: var(--body-background) !important;
@@ -17,8 +19,9 @@ body {
   height: 100vh;
   overflow: hidden;
   z-index: 0;
+
   &::after,
-  &::before{
+  &::before {
     content: "";
     position: absolute;
     top: 0;
@@ -29,13 +32,16 @@ body {
     background-color: #171717;
     z-index: -1;
   }
-  &::after{
+
+  &::after {
     opacity: 0.9;
   }
-  &::before{
+
+  &::before {
     // background: url('./assets/Loginwallpaper.jpg');
     // opacity: 0.6;
   }
+
   #topProp,
   #bottomProp {
     position: absolute;
@@ -45,12 +51,14 @@ body {
     z-index: -1;
     will-change: border-radius, transform, opacity;
   }
+
   #topProp {
     -webkit-animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
     -moz-animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
     -o-animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
     animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
     left: 0;
+
     &::after,
     &::before {
       content: "";
@@ -60,31 +68,29 @@ body {
       position: absolute;
       filter: blur(100px);
     }
+
     &::after {
-      background-image: linear-gradient(
-        -225deg,
-        #060047 0,
-        #B3005E 29%,
-        #E90064 67%,
-        #FF5F9E 100%
-      );
+      background-image: linear-gradient(-225deg,
+          #060047 0,
+          #B3005E 29%,
+          #E90064 67%,
+          #FF5F9E 100%);
       background-size: 500% 500%;
       -webkit-animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
-    -moz-animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
-    -o-animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
-    animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
+      -moz-animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
+      -o-animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
+      animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
       width: 100%;
       bottom: 10%;
       left: 40%;
     }
+
     &::before {
-      background-image: linear-gradient(
-        -225deg,
-        #3498db 0,
-        #9b59b6 29%,
-        #e74c3c 67%,
-        #f1c40f 100%
-      );
+      background-image: linear-gradient(-225deg,
+          #3498db 0,
+          #9b59b6 29%,
+          #e74c3c 67%,
+          #f1c40f 100%);
       background-size: 500% 500%;
       animation: bg 2s ease-in-out infinite;
       width: 100%;
@@ -92,12 +98,14 @@ body {
       left: 10%;
     }
   }
+
   #bottomProp {
     -webkit-animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
     -moz-animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
     -o-animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
     animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
     right: 0;
+
     &::after,
     &::before {
       content: "";
@@ -107,31 +115,29 @@ body {
       position: absolute;
       filter: blur(100px);
     }
+
     &::after {
-      background-image: linear-gradient(
-        -225deg,
-        #3498db 0,
-        #9b59b6 29%,
-        #e74c3c 67%,
-        #f1c40f 100%
-      );
+      background-image: linear-gradient(-225deg,
+          #3498db 0,
+          #9b59b6 29%,
+          #e74c3c 67%,
+          #f1c40f 100%);
       background-size: 500% 500%;
       -webkit-animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
-    -moz-animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
-    -o-animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
-    animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
+      -moz-animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
+      -o-animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
+      animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
       width: 100%;
       top: 10%;
       right: 10%;
     }
+
     &::before {
-      background-image: linear-gradient(
-        -225deg,
-        #3498db 0,
-        #9b59b6 29%,
-        #e74c3c 67%,
-        #f1c40f 100%
-      );
+      background-image: linear-gradient(-225deg,
+          #3498db 0,
+          #9b59b6 29%,
+          #e74c3c 67%,
+          #f1c40f 100%);
       background-size: 500% 500%;
       animation: bg 4s ease-in-out infinite;
       width: 100%;
@@ -140,36 +146,50 @@ body {
     }
   }
 }
+
 // constant
 .white,
-.dataTables_wrapper div{
+.dataTables_wrapper div,
+.ng-value-label,
+.ng-select .ng-select-container .ng-value-container .ng-placeholder {
   color: white !important;
 }
+
 .black {
   color: black;
+}
+.pointer{
+  cursor: pointer;
 }
 .whiteBg {
   background-color: white;
 }
+
 .blackBg {
   background-color: black;
 }
-.capitalize{
+
+.capitalize {
   text-transform: capitalize;
 }
-.height70vh{
+
+.height70vh {
   height: 70vh;
 }
-.no-border{
+
+.no-border {
   border: 0;
   border-color: transparent;
 }
-.no-textDecoration{
+
+.no-textDecoration {
   text-decoration: none;
 }
-.h100vh{
+
+.h100vh {
   height: 100vh;
 }
+
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -181,7 +201,8 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
-.searchInp{
+
+.searchInp {
   background: none;
   width: 100%;
   border: none;
@@ -190,6 +211,7 @@ input[type=number] {
   padding: 10px;
   outline: none;
 }
+
 // .slider-thumb::before {
 // 	position: absolute;
 //     content: "";
@@ -206,33 +228,58 @@ input[type=number] {
 //     z-index: -1;
 //     -webkit-animation: sliderShape 5s linear infinite, sliderShape 5s linear infinite, sliderShape 5s linear infinite, pulse 10s infinite, bounce 3s infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite, bg 4s ease-in-out infinite;
 // }
+.btnBgRemove {
+  background: none;
+  border: none;
+  color: #fff;
+}
+
+.modal-content {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(11.9px);
+  -webkit-backdrop-filter: blur(11.9px);
+}
+.modal-header,
+.modal-footer{
+  border: none;
+}
 // key frames
-@keyframes sliderShape{
-  0%,100%{
-  border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
-    transform: translate3d(0,0,0) rotateZ(0.01deg);
+@keyframes sliderShape {
+
+  0%,
+  100% {
+    border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+    transform: translate3d(0, 0, 0) rotateZ(0.01deg);
   }
-  34%{
-      border-radius: 70% 30% 46% 54% / 30% 29% 71% 70%;
-    transform:  translate3d(0,5px,0) rotateZ(0.01deg);
+
+  34% {
+    border-radius: 70% 30% 46% 54% / 30% 29% 71% 70%;
+    transform: translate3d(0, 5px, 0) rotateZ(0.01deg);
   }
-  50%{
-    transform: translate3d(0,0,0) rotateZ(0.01deg);
+
+  50% {
+    transform: translate3d(0, 0, 0) rotateZ(0.01deg);
   }
-  67%{
-    border-radius: 100% 60% 60% 100% / 100% 100% 60% 60% ;
-    transform: translate3d(0,-3px,0) rotateZ(0.01deg);
+
+  67% {
+    border-radius: 100% 60% 60% 100% / 100% 100% 60% 60%;
+    transform: translate3d(0, -3px, 0) rotateZ(0.01deg);
   }
 }
+
 @keyframes pulse {
   from {
     transform: scale(1);
     opacity: 1;
   }
+
   50% {
     transform: scale(0.75);
     opacity: 0.25;
   }
+
   to {
     transform: scale(1);
     opacity: 1;
@@ -244,22 +291,27 @@ input[type=number] {
     top: 200px;
     animation-timing-function: ease-in-out;
   }
+
   25% {
     top: 50px;
     animation-timing-function: ease-in-out;
   }
+
   50% {
     top: 100px;
     animation-timing-function: ease-in-out;
   }
+
   75% {
     top: 75px;
     animation-timing-function: ease-in-out;
   }
+
   100% {
     top: 200px;
   }
 }
+
 @keyframes bg {
   50% {
     background-position: 100% 100%;

@@ -1,11 +1,119 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ethers } from 'ethers';
 import { HelperService } from './helper.service';
 import { LoaderService } from './loader.service';
 import { UniversalService } from './universal.service';
-const CONTRACT_ADDRESS = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512';
+import { ApiService } from '../services/api.service'
+import { Subscription } from 'rxjs';
+const CONTRACT_ADDRESS = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
 const ABI = [
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "id",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "studentaddress",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "age",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "number",
+				"type": "uint256"
+			}
+		],
+		"name": "AddedStudent",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "id",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "teacheraddress",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "age",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "number",
+				"type": "uint256"
+			}
+		],
+		"name": "AddedTeacher",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "message",
+				"type": "string"
+			}
+		],
+		"name": "Error",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "message",
+				"type": "string"
+			}
+		],
+		"name": "Success",
+		"type": "event"
+	},
 	{
 		"inputs": [
 			{
@@ -116,7 +224,7 @@ const ABI = [
 				"type": "uint256"
 			}
 		],
-		"name": "assignCourse",
+		"name": "assignCourseToStudent",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -125,55 +233,19 @@ const ABI = [
 		"inputs": [
 			{
 				"internalType": "uint256",
-				"name": "_studentId",
+				"name": "_teacherId",
 				"type": "uint256"
 			},
 			{
 				"internalType": "uint256",
-				"name": "_attendance",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "courseIndex",
+				"name": "_courseId",
 				"type": "uint256"
 			}
 		],
-		"name": "markAttendance",
+		"name": "assignCourseToTeacher",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_studentId",
-				"type": "uint256"
-			}
-		],
-		"name": "payCoursesFees",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "message",
-				"type": "string"
-			}
-		],
-		"name": "Success",
-		"type": "event"
 	},
 	{
 		"inputs": [
@@ -364,25 +436,6 @@ const ABI = [
 				"type": "uint256"
 			}
 		],
-		"name": "getAssignedCourses",
-		"outputs": [
-			{
-				"internalType": "uint256[]",
-				"name": "",
-				"type": "uint256[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_studentId",
-				"type": "uint256"
-			}
-		],
 		"name": "getAssignedCoursesWithGrades",
 		"outputs": [
 			{
@@ -482,6 +535,25 @@ const ABI = [
 		"inputs": [
 			{
 				"internalType": "uint256",
+				"name": "_studentId",
+				"type": "uint256"
+			}
+		],
+		"name": "getStudentAssignedCourses",
+		"outputs": [
+			{
+				"internalType": "uint256[]",
+				"name": "",
+				"type": "uint256[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
 				"name": "_teacherId",
 				"type": "uint256"
 			}
@@ -542,6 +614,61 @@ const ABI = [
 			}
 		],
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_teacherId",
+				"type": "uint256"
+			}
+		],
+		"name": "getTeacherAssignedCourses",
+		"outputs": [
+			{
+				"internalType": "uint256[]",
+				"name": "",
+				"type": "uint256[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_studentId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_attendance",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "courseIndex",
+				"type": "uint256"
+			}
+		],
+		"name": "markAttendance",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_studentId",
+				"type": "uint256"
+			}
+		],
+		"name": "payCoursesFees",
+		"outputs": [],
+		"stateMutability": "payable",
 		"type": "function"
 	},
 	{
@@ -713,7 +840,15 @@ declare let window: any;
 	providedIn: 'root'
 })
 export class ContractService {
-	constructor(private router: Router, private helper: HelperService) { }
+	private subscription!: Subscription;
+	constructor(private router: Router, private helper: HelperService, private modalService: NgbModal, private http: ApiService) { }
+
+	ngOnDestroy() {
+		if (this.subscription) {
+		  this.subscription.unsubscribe();
+		}
+	  }
+
 	async connectWallet() {
 		if (window.ethereum) {
 			try {
@@ -739,6 +874,8 @@ export class ContractService {
 			const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
 			const result = await contract;
 			const courses = await result['viewCourses']()
+			console.log(courses);
+			
 			return courses;
 		} catch (error: any) {
 			console.log("Error calling contract function:", error);
@@ -755,6 +892,7 @@ export class ContractService {
 			const result = await contract;
 			const courses = await result['addCourse'](data?.courseName, data?.courseFee)
 			await courses.wait();
+			console.log(courses);
 			this.router.navigateByUrl('dashboard/courses')
 			await UniversalService.header.next("Courses")
 			await UniversalService.AddCourse.next(true)
@@ -803,12 +941,19 @@ export class ContractService {
 			const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
 			const result = await contract;
 			const students = await result['addStudent'](name, address, age, number)
-			await students.wait();
+			const student = await students.wait();
+			const id = student?.events?.[0]?.args?.id?.toNumber()
+			const message = student?.events?.[1]?.args?.message
 			this.router.navigateByUrl('dashboard/students')
+			this.subscription = await this.http.postMethod(`http://localhost:3000/api/auth/signup?email=${name.split(' ')[0]?.toLowerCase()}@sms.com&role=student&id=${id}`,{},true).subscribe(res=>{
+				console.log(res);
+			},err=>{
+				console.log(err);
+			})
 			await UniversalService.header.next("Students")
 			await UniversalService.AddStudent.next(true)
 			await LoaderService.loader.next(false)
-			await this.helper.showSuccess("Student added successfully")
+			await this.helper.showSuccess(message)
 		} catch (error: any) {
 			LoaderService.loader.next(false)
 			if (this.helper.extractErrorMessage(error?.message)) {
@@ -824,12 +969,58 @@ export class ContractService {
 			const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
 			const result = await contract;
 			const teachers = await result['addTeacher'](name, address, age, number)
-			await teachers.wait();
+			const teacher = await teachers.wait();
+			const id = teacher?.events?.[0]?.args?.id?.toNumber()
+			const message = teacher?.events?.[1]?.args?.message
+			console.log(teacher)
 			this.router.navigateByUrl('dashboard/teachers')
+			this.subscription = await this.http.postMethod(`http://localhost:3000/api/auth/signup?email=${name.split(' ')[0]?.toLowerCase()}@sms.com&role=teacher&id=${id}`,{},true).subscribe(res=>{
+				console.log(res);
+			},err=>{
+				console.log(err);
+			})
 			await UniversalService.header.next("Teachers")
 			await UniversalService.AddTeachers.next(true)
 			await LoaderService.loader.next(false)
-			await this.helper.showSuccess("Teacher added successfully")
+			await this.helper.showSuccess(message)
+		} catch (error: any) {
+			LoaderService.loader.next(false)
+			if (this.helper.extractErrorMessage(error?.message)) {
+				this.helper.showError(this.helper.extractErrorMessage(error?.message))
+			}
+		}
+	}
+	async assignCourseStudent(id: number, courseId: number) {
+		LoaderService.loader.next(true)
+		try {
+			const provider = new ethers.providers.Web3Provider(window.ethereum);
+			const signer = provider.getSigner();
+			const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+			const result = await contract;
+			const students = await result['assignCourseToStudent'](id, courseId)
+			students.wait();
+			await this.modalService.dismissAll()
+			await LoaderService.loader.next(false)
+			await this.helper.showSuccess("Course assigned successfully")
+		} catch (error: any) {
+			LoaderService.loader.next(false)
+			if (this.helper.extractErrorMessage(error?.message)) {
+				this.helper.showError(this.helper.extractErrorMessage(error?.message))
+			}
+		}
+	}
+	async assignCourseTeacher(id: number, courseId: number) {
+		LoaderService.loader.next(true)
+		try {
+			const provider = new ethers.providers.Web3Provider(window.ethereum);
+			const signer = provider.getSigner();
+			const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+			const result = await contract;
+			const teachers = await result['assignCourseToTeacher'](id, courseId)
+			teachers.wait();
+			await this.modalService.dismissAll()
+			await LoaderService.loader.next(false)
+			await this.helper.showSuccess("Course assigned successfully")
 		} catch (error: any) {
 			LoaderService.loader.next(false)
 			if (this.helper.extractErrorMessage(error?.message)) {

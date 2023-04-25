@@ -14,19 +14,10 @@
         <app-text tag="p" [text]="item.name" class="white mb-0 p-1 text-center"></app-text>
       </a>
     </ng-container>
-    <!-- <ng-container *ngIf="item.children">
-      <div ngbDropdown class="p-3 text-center">
-        <a href="javascript:void(0)" class="white no-border no-textDecoration mb-0" id="{{item.name}}"
-          ngbDropdownToggle>
-          {{item.name}}
-        </a>
-        <div ngbDropdownMenu>
-          <a [routerLink]="child.route" *ngFor="let child of item.children"
-            class="no-textDecoration d-flex align-items-center">
-            <app-text tag="p" [text]="child.name" class="black mb-0 p-1 text-center"></app-text>
-          </a>
-        </div>
-      </div>
-    </ng-container> -->
   </div>
+  <ng-container>
+    <a (click)="logout()" class="pointer no-textDecoration d-flex align-items-center justify-content-center p-3">
+      <app-text tag="p" text="Logout" class="white mb-0 p-1 text-center"></app-text>
+    </a>
+  </ng-container>
 </div>

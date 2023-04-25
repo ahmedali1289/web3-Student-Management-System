@@ -1,12 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { StudentsRoutingModule } from './students-routing.module';
 import { StudentsComponent } from './students.component';
 import { AddstudentComponent } from './addstudent/addstudent.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {NgxPaginationModule} from 'ngx-pagination';
+import { NgSelectModule } from '@ng-select/ng-select';
+
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import {NgxPaginationModule} from 'ngx-pagination';
     SharedModule,
     FormsModule,
     ReactiveFormsModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    NgSelectModule
   ]
 })
 export class StudentsModule { }

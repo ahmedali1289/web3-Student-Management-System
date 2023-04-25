@@ -37,7 +37,22 @@ contract StudentContract {
     uint256 public studentId;
     uint256 public teacherId;
     uint256 public courseId;
+    event AddedTeacher(
+        uint256 id,
+        string name,
+        string teacheraddress,
+        uint256 age,
+        uint256 number
+    );
+    event AddedStudent(
+        uint256 id,
+        string name,
+        string studentaddress,
+        uint256 age,
+        uint256 number
+    );
     event Success(string message);
+    event Error(string message);
 
     constructor() public {
         admin = msg.sender;
@@ -106,10 +121,10 @@ contract StudentContract {
                     )
                 ) == studentHash
             ) {
-                require(
-                    false,
+                emit Error(
                     "A student with the same name, address, age, and number already exists."
                 );
+                require(false);
             }
         }
 
@@ -127,6 +142,13 @@ contract StudentContract {
                 attendance: new uint256[](0),
                 feeStatus: false
             })
+        );
+        emit AddedStudent(
+            studentId,
+            studentName,
+            _studentAddress,
+            studentAge,
+            studentNumber
         );
         emit Success("Student add successfully!");
     }
@@ -159,6 +181,9 @@ contract StudentContract {
                     )
                 ) == teacherHash
             ) {
+                emit Error(
+                    "A teacher with the same name, address, age, and number already exists."
+                );
                 require(
                     false,
                     "A teacher with the same name, address, age, and number already exists."
@@ -181,10 +206,19 @@ contract StudentContract {
                 feeStatus: false
             })
         );
+        emit AddedTeacher(
+            teacherId,
+            teacherName,
+            _teacherAddress,
+            teacherAge,
+            teacherNumber
+        );
         emit Success("Teacher add successfully!");
     }
 
-    function assignCourse(uint256 _studentId, uint256 _courseId) public {
+    function assignCourseToStudent(uint256 _studentId, uint256 _courseId)
+        public
+    {
         uint256 studentIndex;
         for (uint256 i = 0; i < students.length; i++) {
             if (students[i].id == _studentId) {
@@ -196,7 +230,7 @@ contract StudentContract {
         // Check if the course has already been assigned to the student
         for (uint256 j = 0; j < students[studentIndex].courses.length; j++) {
             if (students[studentIndex].courses[j] == _courseId) {
-                require(false, "Course already assigned to the student");
+                require(false, "Course already assigned to this student");
             }
         }
 
@@ -204,6 +238,30 @@ contract StudentContract {
         students[studentIndex].courses.push(_courseId);
         students[studentIndex].grades.push(0);
         students[studentIndex].attendance.push(0);
+        emit Success("Course assigned successfully");
+    }
+
+    function assignCourseToTeacher(uint256 _teacherId, uint256 _courseId)
+        public
+    {
+        uint256 teacherIndex;
+        for (uint256 i = 0; i < teachers.length; i++) {
+            if (teachers[i].id == _teacherId) {
+                teacherIndex = i;
+                break;
+            }
+        }
+
+        // Check if the course has already been assigned to the student
+        for (uint256 j = 0; j < teachers[teacherIndex].courses.length; j++) {
+            if (teachers[teacherIndex].courses[j] == _courseId) {
+                require(false, "Course already assigned to this Teacher");
+            }
+        }
+
+        // Assign the course to the student
+        teachers[teacherIndex].courses.push(_courseId);
+        teachers[teacherIndex].attendance.push(0);
         emit Success("Course assigned successfully");
     }
 
@@ -242,6 +300,7 @@ contract StudentContract {
     function getAllTeachers() public view returns (TeacherData[] memory) {
         return teachers;
     }
+
     function getTeacher(uint256 _teacherId)
         public
         view
@@ -264,6 +323,7 @@ contract StudentContract {
             }
         }
     }
+
     function getStudent(uint256 _studentId)
         public
         view
@@ -287,7 +347,7 @@ contract StudentContract {
         }
     }
 
-    function getAssignedCourses(uint256 _studentId)
+    function getStudentAssignedCourses(uint256 _studentId)
         public
         view
         returns (uint256[] memory)
@@ -295,6 +355,18 @@ contract StudentContract {
         for (uint256 i = 0; i < students.length; i++) {
             if (students[i].id == _studentId) {
                 return (students[i].courses);
+            }
+        }
+    }
+
+    function getTeacherAssignedCourses(uint256 _teacherId)
+        public
+        view
+        returns (uint256[] memory)
+    {
+        for (uint256 i = 0; i < teachers.length; i++) {
+            if (teachers[i].id == _teacherId) {
+                return (teachers[i].courses);
             }
         }
     }

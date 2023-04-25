@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, Output } from "@angular/core";
+import { Router } from "@angular/router";
 import { UniversalService } from "src/app/services/universal.service";
 
 @Component({
@@ -19,7 +20,7 @@ export class SidebarComponent {
       this.sidebar = JSON.parse(route)
     }
   }
-  constructor(private cd:ChangeDetectorRef){}
+  constructor(private cd:ChangeDetectorRef,private router: Router){}
   header(item:string){    
     UniversalService.header.next(item)
   }
@@ -32,5 +33,9 @@ export class SidebarComponent {
       }
       this.cd.detectChanges();
     });
+  }
+  logout(){
+    localStorage.clear()
+    this.router.navigate(['']);
   }
 }

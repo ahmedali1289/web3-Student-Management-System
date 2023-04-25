@@ -5,8 +5,8 @@
         <div class="col-sm-6 d-flex justify-content-start">
           <input class="searchInp" type="text" [(ngModel)]="searchInput" placeholder="Search">
         </div>
-        <div class="col-sm-6 d-flex justify-content-end">
-          <app-button text="Add Teacher" [onClick]="route.bind(this)"></app-button>
+        <div class="col-sm-6 d-flex justify-content-end" *ngIf="role == 'admin'">
+          <app-button text="Add Student" [onClick]="route.bind(this)"></app-button>
         </div>
       </div>
     </div>
@@ -19,6 +19,9 @@
             <th>Address</th>
             <th>Age</th>
             <th>Number</th>
+            <th>Email</th>
+            <th>Password</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -29,15 +32,18 @@
               <td>{{ row.address }}</td>
               <td>{{ row.age }}</td>
               <td>{{ row.number }}</td>
+              <td>{{ row.email }}</td>
+              <td>{{ row.password }}</td>
+            <td><button (click)="open(assignCourse);selectedStudent=row?.id" class="btnBgRemove" placement="top" ngbTooltip="Assign course"><i class="fa fa-edit"></i></button></td>
             </tr>
           </ng-container>
           <ng-template #noData>
             <tr *ngIf="data?.length">
-              <td colspan="5" class="text-center white">No Matching Data Available</td>
+              <td colspan="8" class="text-center white">No Matching Data Available</td>
             </tr>
           </ng-template>
           <tr *ngIf="!data?.length">
-            <td colspan="5" class="text-center white">No Data Available</td>
+            <td colspan="8" class="text-center white">No Data Available</td>
           </tr>
         </tbody>
       </table>
@@ -47,3 +53,18 @@
     </div>
   </div>
 </div>
+<!-- assign course modal -->
+<ng-template #assignCourse let-modal>
+	<div class="modal-header">
+    <app-text tag="h4" text="Assign Course" class="text-center white"></app-text>
+		<button type="button" class="btn-close" aria-label="Close" (click)="modal.close()"></button>
+	</div>
+	<div class="modal-body capitalize white">
+<ng-select [(ngModel)]="selectedCourse" placeholder="Select course">
+  <ng-option *ngFor="let course of courses" [value]="course.id">Name: {{ course.name }} - Fee: {{ course.fee }}</ng-option>
+</ng-select>
+	</div>
+	<div class="modal-footer d-flex justify-content-end">
+    <app-button text="Assign" [onClick]="courseAssign.bind(this)"></app-button>
+	</div>
+</ng-template>
