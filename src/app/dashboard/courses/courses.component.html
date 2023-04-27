@@ -5,7 +5,7 @@
         <div class="col-sm-6 d-flex justify-content-start">
           <input class="searchInp" type="text" [(ngModel)]="searchInput" placeholder="Search">
         </div>
-        <div class="col-sm-6 d-flex justify-content-end">
+        <div class="col-sm-6 d-flex justify-content-end" *ngIf="role == 'admin'">
           <app-button text="Add Course" [onClick]="route.bind(this)"></app-button>
         </div>
       </div>
@@ -20,19 +20,19 @@
           </tr>
         </thead>
         <tbody>
-          <ng-container *ngIf="(data | filter: searchInput)?.length; else noData">
-            <tr *ngFor="let row of data | filter: searchInput | paginate: { itemsPerPage: 10, currentPage: p }">
+          <ng-container *ngIf="(courses | filter: searchInput)?.length; else noData">
+            <tr *ngFor="let row of courses | filter: searchInput | paginate: { itemsPerPage: 10, currentPage: p }">
               <td>{{ row.id }}</td>
               <td>{{ row.name }}</td>
               <td>{{ row.fee }}</td>
             </tr>
           </ng-container>
           <ng-template #noData>
-            <tr *ngIf="data?.length">
+            <tr *ngIf="courses?.length">
               <td colspan="6" class="text-center white">No Matching Data Available</td>
             </tr>
           </ng-template>
-          <tr *ngIf="!data?.length">
+          <tr *ngIf="!courses?.length">
             <td></td>
             <td class="text-center white">No Data Available</td>
             <td></td>

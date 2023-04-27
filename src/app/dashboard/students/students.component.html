@@ -34,7 +34,8 @@
               <td>{{ row.number }}</td>
               <td>{{ row.email }}</td>
               <td>{{ row.password }}</td>
-            <td><button (click)="open(assignCourse);selectedStudent=row?.id" class="btnBgRemove" placement="top" ngbTooltip="Assign course"><i class="fa fa-edit"></i></button></td>
+              <td><button (click)="getAssignedCourses(row.id);open(assignCourse);selectedStudent=row?.id;" class="btnBgRemove" placement="top"
+                  ngbTooltip="Assign course"><i class="fa fa-edit"></i></button></td>
             </tr>
           </ng-container>
           <ng-template #noData>
@@ -55,16 +56,15 @@
 </div>
 <!-- assign course modal -->
 <ng-template #assignCourse let-modal>
-	<div class="modal-header">
+  <div class="modal-header">
     <app-text tag="h4" text="Assign Course" class="text-center white"></app-text>
-		<button type="button" class="btn-close" aria-label="Close" (click)="modal.close()"></button>
-	</div>
-	<div class="modal-body capitalize white">
-<ng-select [(ngModel)]="selectedCourse" placeholder="Select course">
-  <ng-option *ngFor="let course of courses" [value]="course.id">Name: {{ course.name }} - Fee: {{ course.fee }}</ng-option>
-</ng-select>
-	</div>
-	<div class="modal-footer d-flex justify-content-end">
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.close()"></button>
+  </div>
+  <div class="modal-body capitalize white">
+    <ng-select [items]="courses" bindLabel="name" bindValue="id" [(ngModel)]="selectedCourse">
+    </ng-select>
+  </div>
+  <div class="modal-footer d-flex justify-content-end">
     <app-button text="Assign" [onClick]="courseAssign.bind(this)"></app-button>
-	</div>
+  </div>
 </ng-template>

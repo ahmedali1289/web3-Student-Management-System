@@ -1,7 +1,7 @@
 <div class="container ps-5 pe-5 h100vh d-flex justify-content-center align-items-center w-100">
     <div class="row w-100">
         <div class="col-sm-12">
-          <app-form [fields]="['Course', 'Fee']" [fieldTypes]="['text', 'text']" [error]="true"></app-form>
+          <app-form [fields]="['Course', 'Fee']" [fieldTypes]="['text', 'number']" [error]="true"></app-form>
         </div>
         <div class="col-sm-12 mt-3 mb-3 d-flex justify-content-center align-items-center">
           <app-button text="Add" [onClick]="addCourse.bind(this)"></app-button>

@@ -20,6 +20,9 @@ export interface Course {
   name: string;
   fee: number;
 }
+export interface assignedCourse {
+  id: number;
+}
 @Component({
   selector: 'app-teachers',
   templateUrl: './teachers.component.html',
@@ -33,6 +36,8 @@ export class TeachersComponent {
   selectedCourse!: number;
   selectedTeacher!: number;
   courses:Course[] = [];
+  assignedCourses:assignedCourse[] = [];
+  originalCourses:Course[] = [];
   role!:string
   private subscription!: Subscription;
   ngOnInit(): void {
@@ -53,23 +58,35 @@ export class TeachersComponent {
     }
   }
   async getTeachers() {
-    const teachers: any = await this.contract.getTeachers()
-    this.subscription = await this.http.getMethod(`http://localhost:3000/api/auth/users/teacher`,true).subscribe(res=>{
-         teachers?.map((teacher: any,index:number) => {
-            this.data.push({
-              id: teacher?.id?.toNumber(),
-              name: teacher?.name,
-              age: teacher?.age?.toNumber(),
-              address: teacher?.teacheraddress,
-              number: teacher?.number?.toNumber(),
-              email:res?.[index]?.email,
-              password: res?.[index]?.password
-            })
-        })
-    },err=>{
-      console.log(err);
-    })    
-    await LoaderService.loader.next(false)
+    try {
+      // Make both calls in parallel using Promise.all()
+      const [teachers, res] = await Promise.all([
+        this.contract.getTeachers(),
+        this.http.getMethod('http://localhost:3000/api/auth/users/teacher', true).toPromise()
+      ]);
+      
+      // Create a new array using map()
+      const data = teachers?.map((teacher: any, index: number) => {
+        const { id, name, age, teacheraddress, number } = teacher;
+        const { email, password } = res?.[index] ?? {};
+        return {
+          id: id?.toNumber(),
+          name,
+          age: age?.toNumber(),
+          address: teacheraddress,
+          number: number?.toNumber(),
+          email,
+          password
+        };
+      }) ?? [];
+      
+      // Update the data property with the new array
+      this.data = data;
+    } catch (error) {
+      console.error(error);
+    } finally {
+      await LoaderService.loader.next(false);
+    }
   }
   route() {
     UniversalService.header.next('Add Teacher')
@@ -98,19 +115,56 @@ export class TeachersComponent {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then();
   }
   async getCourses() {
-    const courses = await this.contract.getCourses()
-    courses?.map((course: any) => {
-      this.courses.push({
-        id: course[0].toNumber(),
-        name: course[1],
-        fee: course.fee.toNumber(),
-      })
-    })
-    await LoaderService.loader.next(false)
-  }
-  courseAssign() {
-    if(this.selectedCourse){
-      this.contract.assignCourseTeacher(this.selectedCourse,this.selectedTeacher)
+    try {
+      const courses = await this.contract.getCourses();
+  
+      const newCourses = courses?.map((course: any) => {
+        const [id, name, fee] = course;
+        return {
+          id: id?.toNumber(),
+          name,
+          fee: fee?.toNumber(),
+        };
+      }) ?? [];
+  
+      this.courses = newCourses;
+      this.originalCourses = newCourses;
+  
+    } catch (error) {
+      console.error(error);
+    } finally {
+      await LoaderService.loader.next(false);
     }
+  }
+  async getAssignedCourses(id: number) {
+    try {
+      this.courses = this.originalCourses;
+      this.assignedCourses = [];
+      const courses = await this.contract.getTeacherAssignedCourses(id);
+  
+      const newAssignedCourses = courses?.map((course: any) => {
+        return { id: course?.toNumber() };
+      }) ?? [];
+  
+      this.assignedCourses = newAssignedCourses;
+      this.courses = this.courses?.filter((course) => {
+        return !newAssignedCourses?.some((assignedCourse:assignedCourse) => {
+          return course.id === assignedCourse.id;
+        });
+      });
+  
+    } catch (error) {
+      console.error(error);
+    } finally {
+      await LoaderService.loader.next(false);
+    }
+  }
+  
+  async courseAssign() {
+    if (this.selectedCourse) {
+      this.contract.assignCourseTeacher(this.selectedTeacher, this.selectedCourse);
+    }
+    this.selectedCourse = -1;
+    this.courses = this.originalCourses;
   }
 }

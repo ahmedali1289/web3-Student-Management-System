@@ -19,14 +19,12 @@ export class ChangePasswordComponent {
   constructor(private authService: AuthGuardService, private router: Router, private api: ApiService, private helper: HelperService) {
   }
   
-  login() {
+  changePassword() {
     const formData = this.formComponent.formGroup.value;
     LoaderService.loader.next(true)
-    this.subscription = this.api.postMethod(`http://localhost:3000/api/auth/login?email=${formData.Email}&password=${formData.Password}`, {}, false).subscribe((response: any) => {
+    this.subscription = this.api.postMethod(`http://localhost:3000/api/auth/change-password?id=${localStorage.getItem('_id')}&oldPassword=${formData['Old Password']}&newPassword=${formData['New Password']}`, {}, false).subscribe((response: any) => {
       this.helper.showSuccess(response?.status)
       this.router.navigate(['/dashboard']);
-      this.authService.login(response?.user?.role, response?.token, response?.route)
-      UniversalService.sidebar.next(response?.route)
       LoaderService.loader.next(false)
     }, (error) => {
       this.helper.showError(error?.status)

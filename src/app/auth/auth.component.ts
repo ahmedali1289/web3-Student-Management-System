@@ -24,6 +24,8 @@ export class AuthComponent {
       this.router.navigate(['/dashboard']);
       this.authService.login(response?.user?.role, response?.token, response?.route)
       UniversalService.sidebar.next(response?.route)
+      localStorage.setItem('id',response?.user?.id)
+      localStorage.setItem('_id',response?.user?._id)
       LoaderService.loader.next(false)
     }, (error) => {
       this.helper.showError(error?.status)

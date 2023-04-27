@@ -38,13 +38,12 @@ router.post("/signup", async (req, res) => {
     };
 
     const user = await User.create(userData);
-    res.status(200).json({ status: "User created!", email, withoutHashedPassword });
+    res.status(200).json({ status: "User created!", user });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Server error" });
   }
 });
-
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.query;
@@ -90,6 +89,16 @@ router.post("/login", async (req, res) => {
     }
     if (user.role == "teacher") {
       routes = [
+        {
+          route: "attendance",
+          name: "Attendance",
+          icon: "fa-books",
+        },
+        {
+          route: "courses",
+          name: "Courses",
+          icon: "fa-books",
+        },
         {
           route: "students",
           name: "Students",
@@ -147,6 +156,38 @@ router.get("/users/:role", async (req, res) => {
     }
 
     res.json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+router.post("/change-password", async (req, res) => {
+  // console.log(req)
+  try {
+    const { id, oldPassword, newPassword } = req.query;
+    console.log(id, oldPassword, newPassword,req.query)
+    // Check if oldPassword and newPassword are present
+    if (!oldPassword || !newPassword) {
+      return res.status(400).json({ status: "Old password and new password are required." });
+    }
+
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(400).json({ status: "User not found." });
+    }
+    
+    // Check if old password is correct
+    if (oldPassword !== user.password) {
+      return res.status(400).json({ status: "Incorrect old password." });
+    }
+
+    // Update user's password
+    user.password = newPassword;
+    await user.save();
+
+    res.json({
+      status: "Password updated successfully.",
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Server error" });

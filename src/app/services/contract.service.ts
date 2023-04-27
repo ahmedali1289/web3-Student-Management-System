@@ -10,6 +10,24 @@ import { Subscription } from 'rxjs';
 const CONTRACT_ADDRESS = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
 const ABI = [
 	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "courseName",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "courseFee",
+				"type": "uint256"
+			}
+		],
+		"name": "addCourse",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"inputs": [],
 		"stateMutability": "nonpayable",
 		"type": "constructor"
@@ -87,50 +105,6 @@ const ABI = [
 		],
 		"name": "AddedTeacher",
 		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "message",
-				"type": "string"
-			}
-		],
-		"name": "Error",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "message",
-				"type": "string"
-			}
-		],
-		"name": "Success",
-		"type": "event"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "courseName",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "courseFee",
-				"type": "uint256"
-			}
-		],
-		"name": "addCourse",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
 	},
 	{
 		"inputs": [
@@ -246,6 +220,68 @@ const ABI = [
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "message",
+				"type": "string"
+			}
+		],
+		"name": "Error",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_studentId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_attendance",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "courseIndex",
+				"type": "uint256"
+			}
+		],
+		"name": "markAttendance",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_studentId",
+				"type": "uint256"
+			}
+		],
+		"name": "payCoursesFees",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "message",
+				"type": "string"
+			}
+		],
+		"name": "Success",
+		"type": "event"
 	},
 	{
 		"inputs": [
@@ -636,42 +672,6 @@ const ABI = [
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_studentId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_attendance",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "courseIndex",
-				"type": "uint256"
-			}
-		],
-		"name": "markAttendance",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_studentId",
-				"type": "uint256"
-			}
-		],
-		"name": "payCoursesFees",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
 		"inputs": [],
 		"name": "studentId",
 		"outputs": [
@@ -845,9 +845,9 @@ export class ContractService {
 
 	ngOnDestroy() {
 		if (this.subscription) {
-		  this.subscription.unsubscribe();
+			this.subscription.unsubscribe();
 		}
-	  }
+	}
 
 	async connectWallet() {
 		if (window.ethereum) {
@@ -875,7 +875,37 @@ export class ContractService {
 			const result = await contract;
 			const courses = await result['viewCourses']()
 			console.log(courses);
-			
+
+			return courses;
+		} catch (error: any) {
+			console.log("Error calling contract function:", error);
+			console.log(this.helper.extractErrorMessage(error?.message))
+
+		}
+	}
+	async getStudentAssignedCourses(_studentId: number) {
+		try {
+			const provider = new ethers.providers.Web3Provider(window.ethereum);
+			const signer = provider.getSigner();
+			const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+			const result = await contract;
+			const courses = await result['getStudentAssignedCourses'](_studentId)
+			console.log(courses);
+			return courses;
+		} catch (error: any) {
+			console.log("Error calling contract function:", error);
+			console.log(this.helper.extractErrorMessage(error?.message))
+
+		}
+	}
+	async getTeacherAssignedCourses(_studentId: number) {
+		try {
+			const provider = new ethers.providers.Web3Provider(window.ethereum);
+			const signer = provider.getSigner();
+			const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+			const result = await contract;
+			const courses = await result['getTeacherAssignedCourses'](_studentId)
+			console.log(courses);
 			return courses;
 		} catch (error: any) {
 			console.log("Error calling contract function:", error);
@@ -934,31 +964,43 @@ export class ContractService {
 		}
 	}
 	async addStudent(name: string, address: string, age: number, number: number) {
-		LoaderService.loader.next(true)
+		LoaderService.loader.next(true);
 		try {
 			const provider = new ethers.providers.Web3Provider(window.ethereum);
 			const signer = provider.getSigner();
 			const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
 			const result = await contract;
-			const students = await result['addStudent'](name, address, age, number)
+			const students = await result['addStudent'](name, address, age, number);
 			const student = await students.wait();
-			const id = student?.events?.[0]?.args?.id?.toNumber()
-			const message = student?.events?.[1]?.args?.message
-			this.router.navigateByUrl('dashboard/students')
-			this.subscription = await this.http.postMethod(`http://localhost:3000/api/auth/signup?email=${name.split(' ')[0]?.toLowerCase()}@sms.com&role=student&id=${id}`,{},true).subscribe(res=>{
-				console.log(res);
-			},err=>{
-				console.log(err);
-			})
-			await UniversalService.header.next("Students")
-			await UniversalService.AddStudent.next(true)
-			await LoaderService.loader.next(false)
-			await this.helper.showSuccess(message)
+			const { id, message } = student.events?.reduce(
+				(acc: any, event: any) => ({
+					id: event.args?.id?.toNumber() ?? acc.id,
+					message: event.args?.message ?? acc.message
+				}),
+				{}
+			);
+			const firstName = name?.split(' ')?.[0]?.toLowerCase() ?? name?.toLowerCase();
+			await this.http
+				.postMethod(
+					`http://localhost:3000/api/auth/signup?email=${firstName}@sms.com&role=student&id=${id}`,
+					{},
+					true
+				)
+				.subscribe((res) => {
+					console.log(res);
+				}, (err) => {
+					console.log(err);
+				});
+			await UniversalService.header.next('Students');
+			await UniversalService.AddStudent.next(true);
+			await this.helper.showSuccess(message);
 		} catch (error: any) {
-			LoaderService.loader.next(false)
 			if (this.helper.extractErrorMessage(error?.message)) {
-				this.helper.showError(this.helper.extractErrorMessage(error?.message))
+				this.helper.showError(this.helper.extractErrorMessage(error?.message));
 			}
+		} finally {
+			await LoaderService.loader.next(false);
+			this.router.navigateByUrl('dashboard/students');
 		}
 	}
 	async addTeacher(name: string, address: string, age: number, number: number) {
@@ -974,9 +1016,9 @@ export class ContractService {
 			const message = teacher?.events?.[1]?.args?.message
 			console.log(teacher)
 			this.router.navigateByUrl('dashboard/teachers')
-			this.subscription = await this.http.postMethod(`http://localhost:3000/api/auth/signup?email=${name.split(' ')[0]?.toLowerCase()}@sms.com&role=teacher&id=${id}`,{},true).subscribe(res=>{
+			this.subscription = await this.http.postMethod(`http://localhost:3000/api/auth/signup?email=${name.split(' ')[0]?.toLowerCase()}@sms.com&role=teacher&id=${id}`, {}, true).subscribe(res => {
 				console.log(res);
-			},err=>{
+			}, err => {
 				console.log(err);
 			})
 			await UniversalService.header.next("Teachers")
