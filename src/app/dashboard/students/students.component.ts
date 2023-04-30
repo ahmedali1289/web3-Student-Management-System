@@ -39,9 +39,8 @@ export class StudentsComponent {
   originalCourses:Course[] = [];
   assignedCourses:AssignedCourse[] = [];
   p: number = 1;
-  role!:string;
+  role:any = localStorage.getItem('role');
   ngOnInit(): void {
-    this.role = localStorage.getItem('role') as string;
     this.observe()
     this.getCourses()
   }
@@ -117,8 +116,7 @@ export class StudentsComponent {
   }
   async getCourses() {
     try {
-      const courses = await this.contract.getCourses();
-  
+      const courses = await this.contract.getCourses();  
       const newCourses = courses?.map((course: any) => {
         const [id, name, fee] = course;
         return {
@@ -127,10 +125,8 @@ export class StudentsComponent {
           fee: fee?.toNumber(),
         };
       }) ?? [];
-  
       this.courses = newCourses;
       this.originalCourses = newCourses;
-  
     } catch (error) {
       console.error(error);
     } finally {
@@ -160,12 +156,26 @@ export class StudentsComponent {
       await LoaderService.loader.next(false);
     }
   }
-  
   async courseAssign() {
     if (this.selectedCourse) {
       this.contract.assignCourseStudent(this.selectedStudent, this.selectedCourse);
     }
     this.selectedCourse = -1;
     this.courses = this.originalCourses;
+  }
+  copyText(text: string) {
+    try {
+      navigator.clipboard.writeText(text).then(() => {
+        console.log('Text copied successfully');
+      }, (err) => {
+        console.error('Failed to copy text: ', err);
+      });
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
+    }
+  }
+  assignAttendance(id:any){
+    console.log(id);
+    
   }
 }

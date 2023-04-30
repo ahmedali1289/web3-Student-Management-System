@@ -167,4 +167,15 @@ export class TeachersComponent {
     this.selectedCourse = -1;
     this.courses = this.originalCourses;
   }
+  copyText(text: string) {
+    try {
+      navigator.clipboard.writeText(text).then(() => {
+        console.log('Text copied successfully');
+      }, (err) => {
+        console.error('Failed to copy text: ', err);
+      });
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
+    }
+  }
 }

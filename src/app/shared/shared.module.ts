@@ -9,6 +9,7 @@ import { GreetComponent } from './greet/greet.component';
 import { FormComponent } from './form/form.component';
 import { FilterPipe } from './tableFilter.pipe';
 import { LoaderComponent } from './loader/loader.component';
+import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({
@@ -26,6 +27,7 @@ import { LoaderComponent } from './loader/loader.component';
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
+    NgbTooltip
   ],
   exports:[
     ButtonComponent,

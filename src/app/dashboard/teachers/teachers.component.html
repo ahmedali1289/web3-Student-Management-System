@@ -34,7 +34,8 @@
             <td>{{ row.age }}</td>
             <td>{{ row.number }}</td>
             <td>{{ row.email }}</td>
-            <td>{{ row.password }}</td>
+            <td class="pointer" (click)="copyText(row.password)"> <span placement="top"
+              ngbTooltip="Click to copy" > {{ row.password }}</span></td>
             <td><button (click)="getAssignedCourses(row.id);open(assignCourse);selectedTeacher=row?.id" class="btnBgRemove" placement="top" ngbTooltip="Assign course"><i class="fa fa-edit"></i></button></td>
           </tr>
             </ng-container>

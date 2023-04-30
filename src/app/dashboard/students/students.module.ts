@@ -7,6 +7,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {NgxPaginationModule} from 'ngx-pagination';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { NgSelectModule } from '@ng-select/ng-select';
     FormsModule,
     ReactiveFormsModule,
     NgxPaginationModule,
-    NgSelectModule
+    NgSelectModule,
+    NgbTooltip
   ]
 })
 export class StudentsModule { }

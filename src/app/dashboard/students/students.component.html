@@ -33,9 +33,18 @@
               <td>{{ row.age }}</td>
               <td>{{ row.number }}</td>
               <td>{{ row.email }}</td>
-              <td>{{ row.password }}</td>
-              <td><button (click)="getAssignedCourses(row.id);open(assignCourse);selectedStudent=row?.id;" class="btnBgRemove" placement="top"
-                  ngbTooltip="Assign course"><i class="fa fa-edit"></i></button></td>
+              <td class="pointer" (click)="copyText(row.password)"> <span placement="top" ngbTooltip="Click to copy">
+                  {{ row.password }}</span></td>
+              <td *ngIf="role == 'admin'"><button
+                  (click)="getAssignedCourses(row.id);open(assignCourse);selectedStudent=row?.id;" class="btnBgRemove"
+                  placement="top" ngbTooltip="Assign course"><i class="fa fa-edit"></i></button></td>
+              <td *ngIf="role == 'teacher'" class="d-flex justify-content-center align-items-center">
+                <!-- <button
+                  (click)="getAssignedCourses(row.id);open(assignCourse)" class="btnBgRemove"
+                  placement="top" ngbTooltip="Assign Marks"><i class="fa fa-edit"></i></button> -->
+                <button (click)="assignAttendance(row?.id);open(assignCourse)"
+                  class="btnBgRemove" placement="top" ngbTooltip="Assign Attendance"><i class="fa fa-clipboard"></i></button>
+              </td>
             </tr>
           </ng-container>
           <ng-template #noData>
