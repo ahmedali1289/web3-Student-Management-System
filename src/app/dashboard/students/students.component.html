@@ -20,7 +20,6 @@
             <th>Age</th>
             <th>Number</th>
             <th>Email</th>
-            <th>Password</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -33,8 +32,6 @@
               <td>{{ row.age }}</td>
               <td>{{ row.number }}</td>
               <td>{{ row.email }}</td>
-              <td class="pointer" (click)="copyText(row.password)"> <span placement="top" ngbTooltip="Click to copy">
-                  {{ row.password }}</span></td>
               <td *ngIf="role == 'admin'"><button
                   (click)="getAssignedCourses(row.id);open(assignCourse);selectedStudent=row?.id;" class="btnBgRemove"
                   placement="top" ngbTooltip="Assign course"><i class="fa fa-edit"></i></button></td>
@@ -42,7 +39,7 @@
                 <!-- <button
                   (click)="getAssignedCourses(row.id);open(assignCourse)" class="btnBgRemove"
                   placement="top" ngbTooltip="Assign Marks"><i class="fa fa-edit"></i></button> -->
-                <button (click)="assignAttendance(row?.id);open(assignCourse)"
+                <button (click)="assignAttendance(row?.id);open(addMarks)"
                   class="btnBgRemove" placement="top" ngbTooltip="Assign Attendance"><i class="fa fa-clipboard"></i></button>
               </td>
             </tr>
@@ -75,5 +72,18 @@
   </div>
   <div class="modal-footer d-flex justify-content-end">
     <app-button text="Assign" [onClick]="courseAssign.bind(this)"></app-button>
+  </div>
+</ng-template>
+<!-- Add Marks course modal -->
+<ng-template #addMarks let-modal>
+  <div class="modal-header">
+    <app-text tag="h4" text="Add Marks" class="text-center white"></app-text>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.close()"></button>
+  </div>
+  <div class="modal-body capitalize white">
+    <app-form #marksForm [fields]="['Marks']" [fieldTypes]="['number']" [error]="true"></app-form>
+  </div>
+  <div class="modal-footer d-flex justify-content-end">
+    <app-button text="Assign" (click)="giveMarks(marksForm)"></app-button>
   </div>
 </ng-template>

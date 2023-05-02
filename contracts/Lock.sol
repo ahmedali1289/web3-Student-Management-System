@@ -216,9 +216,10 @@ contract StudentContract {
         emit Success("Teacher add successfully!");
     }
 
-    function assignCourseToStudent(uint256 _studentId, uint256 _courseId)
-        public
-    {
+    function assignCourseToStudent(
+        uint256 _studentId,
+        uint256 _courseId
+    ) public {
         uint256 studentIndex;
         for (uint256 i = 0; i < students.length; i++) {
             if (students[i].id == _studentId) {
@@ -241,9 +242,10 @@ contract StudentContract {
         emit Success("Course assigned successfully");
     }
 
-    function assignCourseToTeacher(uint256 _teacherId, uint256 _courseId)
-        public
-    {
+    function assignCourseToTeacher(
+        uint256 _teacherId,
+        uint256 _courseId
+    ) public {
         uint256 teacherIndex;
         for (uint256 i = 0; i < teachers.length; i++) {
             if (teachers[i].id == _teacherId) {
@@ -301,11 +303,9 @@ contract StudentContract {
         return teachers;
     }
 
-    function getTeacher(uint256 _teacherId)
-        public
-        view
-        returns (TeacherData memory)
-    {
+    function getTeacher(
+        uint256 _teacherId
+    ) public view returns (TeacherData memory) {
         for (uint256 i = 0; i < teachers.length; i++) {
             if (teachers[i].id == _teacherId) {
                 TeacherData memory teacherData = TeacherData({
@@ -324,11 +324,9 @@ contract StudentContract {
         }
     }
 
-    function getStudent(uint256 _studentId)
-        public
-        view
-        returns (StudentData memory)
-    {
+    function getStudent(
+        uint256 _studentId
+    ) public view returns (StudentData memory) {
         for (uint256 i = 0; i < students.length; i++) {
             if (students[i].id == _studentId) {
                 StudentData memory studentData = StudentData({
@@ -347,11 +345,9 @@ contract StudentContract {
         }
     }
 
-    function getStudentAssignedCourses(uint256 _studentId)
-        public
-        view
-        returns (uint256[] memory)
-    {
+    function getStudentAssignedCourses(
+        uint256 _studentId
+    ) public view returns (uint256[] memory) {
         for (uint256 i = 0; i < students.length; i++) {
             if (students[i].id == _studentId) {
                 return (students[i].courses);
@@ -359,11 +355,9 @@ contract StudentContract {
         }
     }
 
-    function getTeacherAssignedCourses(uint256 _teacherId)
-        public
-        view
-        returns (uint256[] memory)
-    {
+    function getTeacherAssignedCourses(
+        uint256 _teacherId
+    ) public view returns (uint256[] memory) {
         for (uint256 i = 0; i < teachers.length; i++) {
             if (teachers[i].id == _teacherId) {
                 return (teachers[i].courses);
@@ -371,11 +365,9 @@ contract StudentContract {
         }
     }
 
-    function getAssignedCoursesWithGrades(uint256 _studentId)
-        public
-        view
-        returns (uint256[] memory, uint256[] memory)
-    {
+    function getAssignedCoursesWithGrades(
+        uint256 _studentId
+    ) public view returns (uint256[] memory, uint256[] memory) {
         for (uint256 i = 0; i < students.length; i++) {
             if (students[i].id == _studentId) {
                 return (students[i].courses, students[i].grades);
@@ -432,5 +424,53 @@ contract StudentContract {
 
     function viewCourses() public view returns (Course[] memory) {
         return (courses);
+    }
+
+    function getStudentsByCourseId(
+        uint256 courseId
+    ) public view returns (uint256[] memory) {
+        uint256[] memory result = new uint256[](students.length);
+        uint256 count = 0;
+
+        for (uint256 i = 0; i < students.length; i++) {
+            for (uint256 j = 0; j < students[i].courses.length; j++) {
+                if (students[i].courses[j] == courseId) {
+                    result[count] = students[i].id;
+                    count++;
+                    break;
+                }
+            }
+        }
+
+        // Resize the result array to the number of students found
+        assembly {
+            mstore(result, count)
+        }
+
+        return result;
+    }
+
+    function getTeachersByCourseId(
+        uint256 courseId
+    ) public view returns (uint256[] memory) {
+        uint256[] memory result = new uint256[](teachers.length);
+        uint256 count = 0;
+
+        for (uint256 i = 0; i < teachers.length; i++) {
+            for (uint256 j = 0; j < teachers[i].courses.length; j++) {
+                if (teachers[i].courses[j] == courseId) {
+                    result[count] = teachers[i].id;
+                    count++;
+                    break;
+                }
+            }
+        }
+
+        // Resize the result array to the number of teachers found
+        assembly {
+            mstore(result, count)
+        }
+
+        return result;
     }
 }

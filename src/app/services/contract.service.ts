@@ -10,24 +10,6 @@ import { Subscription } from 'rxjs';
 const CONTRACT_ADDRESS = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
 const ABI = [
 	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "courseName",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "courseFee",
-				"type": "uint256"
-			}
-		],
-		"name": "addCourse",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
 		"inputs": [],
 		"stateMutability": "nonpayable",
 		"type": "constructor"
@@ -105,6 +87,50 @@ const ABI = [
 		],
 		"name": "AddedTeacher",
 		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "message",
+				"type": "string"
+			}
+		],
+		"name": "Error",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "message",
+				"type": "string"
+			}
+		],
+		"name": "Success",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "courseName",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "courseFee",
+				"type": "uint256"
+			}
+		],
+		"name": "addCourse",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
 		"inputs": [
@@ -220,68 +246,6 @@ const ABI = [
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "message",
-				"type": "string"
-			}
-		],
-		"name": "Error",
-		"type": "event"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_studentId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_attendance",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "courseIndex",
-				"type": "uint256"
-			}
-		],
-		"name": "markAttendance",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_studentId",
-				"type": "uint256"
-			}
-		],
-		"name": "payCoursesFees",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "message",
-				"type": "string"
-			}
-		],
-		"name": "Success",
-		"type": "event"
 	},
 	{
 		"inputs": [
@@ -590,6 +554,25 @@ const ABI = [
 		"inputs": [
 			{
 				"internalType": "uint256",
+				"name": "courseId",
+				"type": "uint256"
+			}
+		],
+		"name": "getStudentsByCourseId",
+		"outputs": [
+			{
+				"internalType": "uint256[]",
+				"name": "",
+				"type": "uint256[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
 				"name": "_teacherId",
 				"type": "uint256"
 			}
@@ -669,6 +652,61 @@ const ABI = [
 			}
 		],
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "courseId",
+				"type": "uint256"
+			}
+		],
+		"name": "getTeachersByCourseId",
+		"outputs": [
+			{
+				"internalType": "uint256[]",
+				"name": "",
+				"type": "uint256[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_studentId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_attendance",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "courseIndex",
+				"type": "uint256"
+			}
+		],
+		"name": "markAttendance",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_studentId",
+				"type": "uint256"
+			}
+		],
+		"name": "payCoursesFees",
+		"outputs": [],
+		"stateMutability": "payable",
 		"type": "function"
 	},
 	{
@@ -913,6 +951,21 @@ export class ContractService {
 
 		}
 	}
+  async getStudentsByCourseId(_courseId: number) {
+		try {
+			const provider = new ethers.providers.Web3Provider(window.ethereum);
+			const signer = provider.getSigner();
+			const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+			const result = await contract;
+			const courses = await result['getStudentsByCourseId'](_courseId)
+			console.log(courses);
+			return courses;
+		} catch (error: any) {
+			console.log("Error calling contract function:", error);
+			console.log(this.helper.extractErrorMessage(error?.message))
+
+		}
+	}
 	async addCourse(data: any) {
 		LoaderService.loader.next(true)
 		try {
@@ -963,7 +1016,7 @@ export class ContractService {
 
 		}
 	}
-	async addStudent(name: string, address: string, age: number, number: number) {
+	async addStudent(name: string, email:string, address: string, age: number, number: number) {
 		LoaderService.loader.next(true);
 		try {
 			const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -982,7 +1035,7 @@ export class ContractService {
 			const firstName = name?.split(' ')?.[0]?.toLowerCase() ?? name?.toLowerCase();
 			await this.http
 				.postMethod(
-					`http://localhost:3000/api/auth/signup?email=${firstName}@sms.com&role=student&id=${id}`,
+					`http://localhost:3000/api/auth/signup?name=${firstName}&email=${email}&role=student&id=${id}`,
 					{},
 					true
 				)

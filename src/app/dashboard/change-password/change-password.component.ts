@@ -18,7 +18,7 @@ export class ChangePasswordComponent {
   private subscription!: Subscription;
   constructor(private authService: AuthGuardService, private router: Router, private api: ApiService, private helper: HelperService) {
   }
-  
+
   changePassword() {
     const formData = this.formComponent.formGroup.value;
     LoaderService.loader.next(true)

@@ -64,7 +64,7 @@ export class TeachersComponent {
         this.contract.getTeachers(),
         this.http.getMethod('http://localhost:3000/api/auth/users/teacher', true).toPromise()
       ]);
-      
+
       // Create a new array using map()
       const data = teachers?.map((teacher: any, index: number) => {
         const { id, name, age, teacheraddress, number } = teacher;
@@ -79,7 +79,7 @@ export class TeachersComponent {
           password
         };
       }) ?? [];
-      
+
       // Update the data property with the new array
       this.data = data;
     } catch (error) {
@@ -117,7 +117,7 @@ export class TeachersComponent {
   async getCourses() {
     try {
       const courses = await this.contract.getCourses();
-  
+
       const newCourses = courses?.map((course: any) => {
         const [id, name, fee] = course;
         return {
@@ -126,10 +126,10 @@ export class TeachersComponent {
           fee: fee?.toNumber(),
         };
       }) ?? [];
-  
+
       this.courses = newCourses;
       this.originalCourses = newCourses;
-  
+
     } catch (error) {
       console.error(error);
     } finally {
@@ -141,25 +141,25 @@ export class TeachersComponent {
       this.courses = this.originalCourses;
       this.assignedCourses = [];
       const courses = await this.contract.getTeacherAssignedCourses(id);
-  
+
       const newAssignedCourses = courses?.map((course: any) => {
         return { id: course?.toNumber() };
       }) ?? [];
-  
+
       this.assignedCourses = newAssignedCourses;
       this.courses = this.courses?.filter((course) => {
         return !newAssignedCourses?.some((assignedCourse:assignedCourse) => {
           return course.id === assignedCourse.id;
         });
       });
-  
+
     } catch (error) {
       console.error(error);
     } finally {
       await LoaderService.loader.next(false);
     }
   }
-  
+
   async courseAssign() {
     if (this.selectedCourse) {
       this.contract.assignCourseTeacher(this.selectedTeacher, this.selectedCourse);

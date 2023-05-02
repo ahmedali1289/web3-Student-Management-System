@@ -1,5 +1,6 @@
 import { Component,HostListener } from '@angular/core';
 import { Router } from '@angular/router';
+import { ApiService } from '../services/api.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,7 +12,7 @@ export class DashboardComponent {
   bodyHeight!: number;
   footerHeight!: number;
   sidebarExpanded = true;
-  constructor() {
+  constructor(private http:ApiService) {
     this.updateHeights();
   }
   @HostListener('window:resize')
@@ -27,5 +28,10 @@ export class DashboardComponent {
     this.footerHeight = windowHeight * footerHeightPercentage;
   }
   ngOnInit() {
+    // this.http.getMethod('http://localhost:3000/api/auth/me',true).subscribe((res:any)=>{
+    //   console.log('====================================');
+    //   console.log(res);
+    //   console.log('====================================');
+    // })
   }
 }

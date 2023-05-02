@@ -16,7 +16,7 @@ export class ApiService {
     };
     let headerT = {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
       Accept: "application/json",
     };
     return this.http.post(link,JSON.stringify(data),
@@ -34,9 +34,12 @@ export class ApiService {
     };
     let headerT = {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
       Accept: "application/json",
     };
+    console.log('====================================');
+    console.log(localStorage.getItem("token"));
+    console.log('====================================');
     return this.http.get(link,
     {
       headers: !token ? header : headerT,

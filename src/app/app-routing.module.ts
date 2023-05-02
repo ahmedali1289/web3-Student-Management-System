@@ -12,13 +12,13 @@ const routes: Routes = [
     canActivate: [InnerGuard]
   },
   { path: '404', component: NotFoundComponent },
-  { path: 'dashboard', loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule), 
+  { path: 'dashboard', loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule),
   canActivate: [AuthGuard]},
   { path: '**', redirectTo: '/404' },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes,{ enableTracing: true, scrollPositionRestoration: 'enabled' })],
+  imports: [RouterModule.forRoot(routes,{ enableTracing: false, scrollPositionRestoration: 'enabled' })],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}
