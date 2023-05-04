@@ -3,7 +3,7 @@
     <div class="col-sm-12 d-flex w-100">
       <div class="row w-100 align-items-center justify-content-between">
         <div class="col-sm-6 d-flex justify-content-start">
-          <input class="searchInp" type="text" [(ngModel)]="searchInput" placeholder="Search">
+          <input class="searchInp mb-5" type="text" [(ngModel)]="searchInput" placeholder="Search">
         </div>
         <div class="col-sm-6 d-flex justify-content-end" *ngIf="role == 'admin'">
           <app-button text="Add Student" [onClick]="route.bind(this)"></app-button>
@@ -20,8 +20,8 @@
             <th>Age</th>
             <th>Number</th>
             <th>Email</th>
-            <th>Attendance</th>
-            <th>Actions</th>
+            <th>Password</th>
+            <th *ngIf="role == 'admin' || role == 'student'">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -33,19 +33,16 @@
               <td>{{ row.age }}</td>
               <td>{{ row.number }}</td>
               <td>{{ row.email }}</td>
-              <td>{{ row.attendance }}</td>
+              <td>{{ row.password }}</td>
               <td *ngIf="role == 'admin'"><button
                   (click)="getAssignedCourses(row.id);open(assignCourse);selectedStudent=row?.id;" class="btnBgRemove"
                   placement="top" ngbTooltip="Assign course"><i class="fa fa-edit"></i></button></td>
-              <td *ngIf="role == 'teacher'" class="d-flex justify-content-center align-items-center">
-                <!-- <button
-                  (click)="getAssignedCourses(row.id);open(assignCourse)" class="btnBgRemove"
-                  placement="top" ngbTooltip="Assign Marks"><i class="fa fa-edit"></i></button> -->
+              <!-- <td *ngIf="role == 'teacher'" class="d-flex justify-content-center align-items-center">
                 <button (click)="getIndex();selectedStudent=row?.id;open(addMarks)"
                   class="btnBgRemove" placement="top" ngbTooltip="Assign Marks"><i class="fa fa-clipboard"></i></button>
                   <button *ngIf="row.attendance == 0" (click)="getIndex();selectedStudent=row?.id;open(addAttendance)"
                   class="btnBgRemove" placement="top" ngbTooltip="Assign Attendance"><i class="fa fa-user"></i></button>
-              </td>
+              </td> -->
             </tr>
           </ng-container>
           <ng-template #noData>

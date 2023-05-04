@@ -3,7 +3,7 @@
     <div class="col-sm-12 d-flex w-100">
         <div class="row w-100 align-items-center justify-content-between">
             <div class="col-sm-6 d-flex justify-content-start">
-                <input class="searchInp" type="text" [(ngModel)]="searchInput" placeholder="Search">
+                <input class="searchInp mb-5" type="text" [(ngModel)]="searchInput" placeholder="Search">
             </div>
             <div class="col-sm-6 d-flex justify-content-end" *ngIf="role == 'admin'">
                 <app-button text="Add Teacher" [onClick]="route.bind(this)"></app-button>
