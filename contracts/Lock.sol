@@ -4,8 +4,6 @@ pragma solidity ^0.8.0;
 contract StudentContract {
     address admin;
     StudentData[] public students;
-    TeacherData[] public teachers;
-    Course[] public courses;
     mapping(uint256 => uint256) public studentPayments;
     struct StudentData {
         string name;
@@ -18,6 +16,8 @@ contract StudentContract {
         uint256[] attendance;
         bool feeStatus;
     }
+    uint256 public studentId;
+    TeacherData[] public teachers;
     struct TeacherData {
         string name;
         string teacheraddress;
@@ -29,13 +29,13 @@ contract StudentContract {
         uint256[] attendance;
         bool feeStatus;
     }
+    uint256 public teacherId;
+    Course[] public courses;
     struct Course {
         uint256 id;
         string name;
         uint256 fee;
     }
-    uint256 public studentId;
-    uint256 public teacherId;
     uint256 public courseId;
     event AddedTeacher(
         uint256 id,
@@ -56,6 +56,15 @@ contract StudentContract {
 
     constructor() public {
         admin = msg.sender;
+    }
+
+    function getCourseIndex(uint256 courseId) public view returns (uint256) {
+        for (uint256 i = 0; i < courses.length; i++) {
+            if (courses[i].id == courseId) {
+                return i;
+            }
+        }
+        revert("Course not found");
     }
 
     function addCourse(string memory courseName, uint256 courseFee) public {
@@ -216,10 +225,9 @@ contract StudentContract {
         emit Success("Teacher add successfully!");
     }
 
-    function assignCourseToStudent(
-        uint256 _studentId,
-        uint256 _courseId
-    ) public {
+    function assignCourseToStudent(uint256 _studentId, uint256 _courseId)
+        public
+    {
         uint256 studentIndex;
         for (uint256 i = 0; i < students.length; i++) {
             if (students[i].id == _studentId) {
@@ -242,10 +250,9 @@ contract StudentContract {
         emit Success("Course assigned successfully");
     }
 
-    function assignCourseToTeacher(
-        uint256 _teacherId,
-        uint256 _courseId
-    ) public {
+    function assignCourseToTeacher(uint256 _teacherId, uint256 _courseId)
+        public
+    {
         uint256 teacherIndex;
         for (uint256 i = 0; i < teachers.length; i++) {
             if (teachers[i].id == _teacherId) {
@@ -286,7 +293,6 @@ contract StudentContract {
         uint256 _attendance,
         uint256 courseIndex
     ) public {
-        require(msg.sender == admin);
         for (uint256 i = 0; i < students.length; i++) {
             if (students[i].id == _studentId) {
                 require(courseIndex < students[i].courses.length);
@@ -303,9 +309,11 @@ contract StudentContract {
         return teachers;
     }
 
-    function getTeacher(
-        uint256 _teacherId
-    ) public view returns (TeacherData memory) {
+    function getTeacher(uint256 _teacherId)
+        public
+        view
+        returns (TeacherData memory)
+    {
         for (uint256 i = 0; i < teachers.length; i++) {
             if (teachers[i].id == _teacherId) {
                 TeacherData memory teacherData = TeacherData({
@@ -324,9 +332,11 @@ contract StudentContract {
         }
     }
 
-    function getStudent(
-        uint256 _studentId
-    ) public view returns (StudentData memory) {
+    function getStudent(uint256 _studentId)
+        public
+        view
+        returns (StudentData memory)
+    {
         for (uint256 i = 0; i < students.length; i++) {
             if (students[i].id == _studentId) {
                 StudentData memory studentData = StudentData({
@@ -345,9 +355,11 @@ contract StudentContract {
         }
     }
 
-    function getStudentAssignedCourses(
-        uint256 _studentId
-    ) public view returns (uint256[] memory) {
+    function getStudentAssignedCourses(uint256 _studentId)
+        public
+        view
+        returns (uint256[] memory)
+    {
         for (uint256 i = 0; i < students.length; i++) {
             if (students[i].id == _studentId) {
                 return (students[i].courses);
@@ -355,9 +367,11 @@ contract StudentContract {
         }
     }
 
-    function getTeacherAssignedCourses(
-        uint256 _teacherId
-    ) public view returns (uint256[] memory) {
+    function getTeacherAssignedCourses(uint256 _teacherId)
+        public
+        view
+        returns (uint256[] memory)
+    {
         for (uint256 i = 0; i < teachers.length; i++) {
             if (teachers[i].id == _teacherId) {
                 return (teachers[i].courses);
@@ -365,9 +379,11 @@ contract StudentContract {
         }
     }
 
-    function getAssignedCoursesWithGrades(
-        uint256 _studentId
-    ) public view returns (uint256[] memory, uint256[] memory) {
+    function getAssignedCoursesWithGrades(uint256 _studentId)
+        public
+        view
+        returns (uint256[] memory, uint256[] memory)
+    {
         for (uint256 i = 0; i < students.length; i++) {
             if (students[i].id == _studentId) {
                 return (students[i].courses, students[i].grades);
@@ -426,9 +442,11 @@ contract StudentContract {
         return (courses);
     }
 
-    function getStudentsByCourseId(
-        uint256 courseId
-    ) public view returns (uint256[] memory) {
+    function getStudentsByCourseId(uint256 courseId)
+        public
+        view
+        returns (uint256[] memory)
+    {
         uint256[] memory result = new uint256[](students.length);
         uint256 count = 0;
 
@@ -450,9 +468,11 @@ contract StudentContract {
         return result;
     }
 
-    function getTeachersByCourseId(
-        uint256 courseId
-    ) public view returns (uint256[] memory) {
+    function getTeachersByCourseId(uint256 courseId)
+        public
+        view
+        returns (uint256[] memory)
+    {
         uint256[] memory result = new uint256[](teachers.length);
         uint256 count = 0;
 

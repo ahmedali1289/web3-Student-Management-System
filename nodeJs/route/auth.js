@@ -12,7 +12,7 @@ const SibApiV3Sdk = require("sib-api-v3-sdk");
 const defaultClient = SibApiV3Sdk.ApiClient.instance;
 const apiKey = defaultClient.authentications["api-key"];
 apiKey.apiKey =
-  "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";
+  "xsmtpsib-a6f5dfeefede4b037e16edc983421e174d089636b04fc7a11d102136691e0c38-xDjH91UA8ESWXtZz";
 const emailApi = new SibApiV3Sdk.EmailCampaignsApi();
 router.post("/signup", async (req, res) => {
   try {
