@@ -42,6 +42,8 @@ export class StudentsComponent {
   courses: Course[] = [];
   originalCourses: Course[] = [];
   assignedCourses: AssignedCourse[] = [];
+  teacherAssignedCourse:any = [];
+  courseIndex!:number;
   p = 1;
   role = localStorage.getItem('role');
   constructor(
@@ -78,7 +80,8 @@ export class StudentsComponent {
           .toPromise(),
       ]);
       this.data = students.map((student: any, index: number) => {
-        const { id, name, age, studentaddress, number } = student;
+        
+        const { id, name, age, studentaddress, number, attendance } = student;
         const { email, password } = res?.[index] ?? {};
         return {
           id: id?.toNumber(),
@@ -86,6 +89,7 @@ export class StudentsComponent {
           age: age?.toNumber(),
           address: studentaddress,
           number: number?.toNumber(),
+          attendance:attendance[0].toNumber(),
           email,
           password,
         };
@@ -162,9 +166,14 @@ export class StudentsComponent {
     }
   }
   async getAssignedCoursesTeacher(id: any) {
+    LoaderService.loader.next(true)
     try {
       const courses = await this.contract.getTeacherAssignedCourses(id);
-      const promises = courses.map((course:any) => this.getStudentsByCourseId(course.toNumber()));
+      const promises = courses.map((course:any) => {this.getStudentsByCourseId(course.toNumber());this.teacherAssignedCourse = course.toNumber()});
+      if(this.role == 'teacher' && !courses?.length){
+    LoaderService.loader.next(false)
+        this.data = []
+      }
       await Promise.all(promises);
     } catch (error) {
       await LoaderService.loader.next(false);
@@ -200,12 +209,33 @@ export class StudentsComponent {
       return;
     }
     else{
+      const data={_studentId:this.selectedStudent,
+        _marks:marks,
+        courseIndex:Number(this.courseIndex)
+      }
+      this.contract.addGrades(data)
       console.log('====================================');
       console.log(marks);
       console.log('====================================');
     }
   }
-  assignAttendance(id: any) {
-    console.log(id);
+  async getIndex(){
+    this.courseIndex = await this.contract.getCourseIndex(this.teacherAssignedCourse);
+  }
+  async assignAttendance(formComponent: FormComponent) {
+    console.log(formComponent);
+    const formGroup:any = formComponent.formGroup.controls;
+    const attendance = formGroup['Attendance'].value;
+    if (!attendance) {
+      this.toaster.error('Form Invalid!');
+      return;
+    }
+    else{
+      const data={_studentId:this.selectedStudent,
+        _attendance:attendance,
+        courseIndex:Number(this.courseIndex)
+      }
+      this.contract.markAttendance(data)
+    }
   }
 }
