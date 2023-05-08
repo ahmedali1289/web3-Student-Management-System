@@ -913,7 +913,6 @@ export class ContractService {
 			const result = await contract;
 			const courses = await result['viewCourses']()
 			console.log(courses);
-
 			return courses;
 		} catch (error: any) {
 			console.log("Error calling contract function:", error);

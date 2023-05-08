@@ -216,10 +216,29 @@ contract StudentContract {
         emit Success("Teacher add successfully!");
     }
 
-    function assignCourseToStudent(
-        uint256 _studentId,
-        uint256 _courseId
-    ) public {
+    function markTeacherAttendance(uint256 _teacherId, uint256 _attendance)
+        public
+    {
+        bool teacherFound = false;
+        for (uint256 i = 0; i < teachers.length; i++) {
+            if (teachers[i].id == _teacherId) {
+                // Check if the attendance has already been marked for the teacher
+                require(
+                    teachers[i].attendance.length == 0 ||
+                        teachers[i].attendance[0] == 0
+                );
+                teachers[i].attendance.push(_attendance);
+                teacherFound = true;
+                break;
+            }
+        }
+        // If teacher with the given ID is not found
+        require(teacherFound, "Teacher with the given ID not found");
+    }
+
+    function assignCourseToStudent(uint256 _studentId, uint256 _courseId)
+        public
+    {
         uint256 studentIndex;
         for (uint256 i = 0; i < students.length; i++) {
             if (students[i].id == _studentId) {
@@ -242,10 +261,9 @@ contract StudentContract {
         emit Success("Course assigned successfully");
     }
 
-    function assignCourseToTeacher(
-        uint256 _teacherId,
-        uint256 _courseId
-    ) public {
+    function assignCourseToTeacher(uint256 _teacherId, uint256 _courseId)
+        public
+    {
         uint256 teacherIndex;
         for (uint256 i = 0; i < teachers.length; i++) {
             if (teachers[i].id == _teacherId) {
@@ -281,18 +299,24 @@ contract StudentContract {
         }
     }
 
-    function markAttendance(
-        uint256 _studentId,
-        uint256 _attendance,
-        uint256 courseIndex
-    ) public {
-        require(msg.sender == admin);
+    function markStudentAttendance(uint256 _studentId, uint256 _attendance)
+        public
+    {
+        bool studentFound = false;
         for (uint256 i = 0; i < students.length; i++) {
             if (students[i].id == _studentId) {
-                require(courseIndex < students[i].courses.length);
-                students[i].attendance[courseIndex] = _attendance;
+                // Check if the attendance has already been marked for the student
+                require(
+                    students[i].attendance.length == 0 ||
+                        students[i].attendance[0] == 0
+                );
+                students[i].attendance.push(_attendance);
+                studentFound = true;
+                break;
             }
         }
+        // If student with the given ID is not found
+        require(studentFound, "Student with the given ID not found");
     }
 
     function getAllStudents() public view returns (StudentData[] memory) {
@@ -303,9 +327,11 @@ contract StudentContract {
         return teachers;
     }
 
-    function getTeacher(
-        uint256 _teacherId
-    ) public view returns (TeacherData memory) {
+    function getTeacher(uint256 _teacherId)
+        public
+        view
+        returns (TeacherData memory)
+    {
         for (uint256 i = 0; i < teachers.length; i++) {
             if (teachers[i].id == _teacherId) {
                 TeacherData memory teacherData = TeacherData({
@@ -324,9 +350,11 @@ contract StudentContract {
         }
     }
 
-    function getStudent(
-        uint256 _studentId
-    ) public view returns (StudentData memory) {
+    function getStudent(uint256 _studentId)
+        public
+        view
+        returns (StudentData memory)
+    {
         for (uint256 i = 0; i < students.length; i++) {
             if (students[i].id == _studentId) {
                 StudentData memory studentData = StudentData({
@@ -345,9 +373,11 @@ contract StudentContract {
         }
     }
 
-    function getStudentAssignedCourses(
-        uint256 _studentId
-    ) public view returns (uint256[] memory) {
+    function getStudentAssignedCourses(uint256 _studentId)
+        public
+        view
+        returns (uint256[] memory)
+    {
         for (uint256 i = 0; i < students.length; i++) {
             if (students[i].id == _studentId) {
                 return (students[i].courses);
@@ -355,9 +385,11 @@ contract StudentContract {
         }
     }
 
-    function getTeacherAssignedCourses(
-        uint256 _teacherId
-    ) public view returns (uint256[] memory) {
+    function getTeacherAssignedCourses(uint256 _teacherId)
+        public
+        view
+        returns (uint256[] memory)
+    {
         for (uint256 i = 0; i < teachers.length; i++) {
             if (teachers[i].id == _teacherId) {
                 return (teachers[i].courses);
@@ -365,9 +397,11 @@ contract StudentContract {
         }
     }
 
-    function getAssignedCoursesWithGrades(
-        uint256 _studentId
-    ) public view returns (uint256[] memory, uint256[] memory) {
+    function getAssignedCoursesWithGrades(uint256 _studentId)
+        public
+        view
+        returns (uint256[] memory, uint256[] memory)
+    {
         for (uint256 i = 0; i < students.length; i++) {
             if (students[i].id == _studentId) {
                 return (students[i].courses, students[i].grades);
@@ -426,9 +460,11 @@ contract StudentContract {
         return (courses);
     }
 
-    function getStudentsByCourseId(
-        uint256 courseId
-    ) public view returns (uint256[] memory) {
+    function getStudentsByCourseId(uint256 courseId)
+        public
+        view
+        returns (uint256[] memory)
+    {
         uint256[] memory result = new uint256[](students.length);
         uint256 count = 0;
 
@@ -450,9 +486,11 @@ contract StudentContract {
         return result;
     }
 
-    function getTeachersByCourseId(
-        uint256 courseId
-    ) public view returns (uint256[] memory) {
+    function getTeachersByCourseId(uint256 courseId)
+        public
+        view
+        returns (uint256[] memory)
+    {
         uint256[] memory result = new uint256[](teachers.length);
         uint256 count = 0;
 
