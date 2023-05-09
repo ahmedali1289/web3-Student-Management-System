@@ -175,31 +175,31 @@
   <div class="modal-body capitalize white">
     <div class="d-flex align-items-center w-100">
       <h6>Name:</h6>
-      <h6>{{ selectedTeacher?.name }}</h6>
+      <h6 class="lowerCase">{{ selectedTeacher?.name }}</h6>
     </div>
     <div class="d-flex align-items-center w-100">
       <h6>Email:</h6>
-      <h6>{{ selectedTeacher?.email }}</h6>
+      <h6 class="lowerCase">{{ selectedTeacher?.email }}</h6>
     </div>
     <div class="d-flex align-items-center w-100">
       <h6>Password:</h6>
-      <h6>{{ selectedTeacher?.password }}</h6>
+      <h6 class="lowerCase">{{ selectedTeacher?.password }}</h6>
     </div>
     <div class="d-flex align-items-center w-100">
       <h6>Age:</h6>
-      <h6>{{ selectedTeacher?.age }}</h6>
+      <h6 class="lowerCase">{{ selectedTeacher?.age }}</h6>
     </div>
     <div class="d-flex align-items-center w-100">
       <h6>Number:</h6>
-      <h6>{{ selectedTeacher?.number }}</h6>
+      <h6 class="lowerCase">{{ selectedTeacher?.number }}</h6>
     </div>
     <div class="d-flex align-items-center w-100">
       <h6>Attendance:</h6>
-      <h6>{{ selectedTeacher?.attendance ? selectedTeacher?.attendance : 0 }}%</h6>
+      <h6 class="lowerCase">{{ selectedTeacher?.attendance ? selectedTeacher?.attendance : 0 }}%</h6>
     </div>
     <div class="d-flex align-items-center w-100">
       <h6>Course:</h6>
-      <h6>{{ getCourseNamesByIds(selectedTeacher?.courses) }}</h6>
+      <h6 class="lowerCase">{{ getCourseNamesByIds(selectedTeacher?.courses) }}</h6>
     </div>
   </div>
 </ng-template>

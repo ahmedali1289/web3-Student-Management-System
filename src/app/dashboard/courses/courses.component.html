@@ -9,7 +9,7 @@
           <app-button text="Add Course" [onClick]="route.bind(this)"></app-button>
         </div>
         <div class="col-sm-6 d-flex justify-content-end" *ngIf="role == 'student' && fees">
-          <app-button [text]="'Your Fees: $' + fees" [onClick]="pay.bind(this)"></app-button>
+          <app-button [text]="'Your Fees: ' + (fees | currency :'USD')" [onClick]="pay.bind(this)"></app-button>
         </div>
       </div>
     </div>
@@ -27,7 +27,7 @@
             <tr *ngFor="let row of courses | filter: searchInput | paginate: { itemsPerPage: 10, currentPage: p }">
               <td>{{ row.id }}</td>
               <td>{{ row.name }}</td>
-              <td>{{ row.fee }}</td>
+              <td>{{ row.fee | currency :'USD' }}</td>
             </tr>
           </ng-container>
           <ng-template #noData>

@@ -10,7 +10,7 @@
   </div>
   <div class="content d-flex justify-content-center flex-column" *ngFor="let item of sidebar">
     <ng-container>
-      <a [routerLink]="item.route" (click)="header(item.name)" class="no-textDecoration d-flex align-items-center justify-content-center p-3">
+      <a [routerLink]="item.route" routerLinkActive="activeSidebar" (click)="header(item.name)" class="no-textDecoration d-flex align-items-center justify-content-center p-3">
         <app-text tag="p" [text]="item.name" class="white mb-0 p-1 text-center"></app-text>
       </a>
     </ng-container>

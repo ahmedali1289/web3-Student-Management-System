@@ -49,4 +49,8 @@
     border: 1px solid rgba( 255, 255, 255, 0.18 );
     color: #fff;
     transform: rotateY(180deg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
   }

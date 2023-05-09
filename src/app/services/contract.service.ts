@@ -7,7 +7,7 @@ import { LoaderService } from './loader.service';
 import { UniversalService } from './universal.service';
 import { ApiService } from '../services/api.service';
 import { Subscription } from 'rxjs';
-const CONTRACT_ADDRESS = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
+const CONTRACT_ADDRESS = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512';
 const ABI = [
 	{
 		"inputs": [],
@@ -1006,6 +1006,19 @@ export class ContractService {
       const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
       const result = await contract;
       const fees = await result['getFees'](_studentId);
+      return fees;
+    } catch (error: any) {
+      console.log('Error calling contract function:', error);
+      console.log(this.helper.extractErrorMessage(error?.message));
+    }
+  }
+  async getContractBalance() {
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+      const result = await contract;
+      const fees = await result['getContractBalance']();
       return fees;
     } catch (error: any) {
       console.log('Error calling contract function:', error);

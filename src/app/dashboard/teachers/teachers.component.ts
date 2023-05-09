@@ -197,10 +197,11 @@ export class TeachersComponent {
 
   async courseAssign() {
     if (this.selectedCourse) {
-      this.contract.assignCourseTeacher(
+      await this.contract.assignCourseTeacher(
         this.selectedTeacherId,
         this.selectedCourse
       );
+      await this.getTeachers()
     }
     this.selectedCourse = -1;
     this.courses = this.originalCourses;
@@ -232,6 +233,7 @@ export class TeachersComponent {
         _attendance: attendance,
       };
       await this.contract.teacherMarkAttendance(data);
+      await this.getTeachers()
       await this.proceed();
     }
   }

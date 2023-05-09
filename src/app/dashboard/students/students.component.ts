@@ -60,12 +60,7 @@ export class StudentsComponent {
   }
   ngOnInit() {
     this.observe();
-    this.getCourses().then(() => {
-      if (this.role === 'teacher') {
-        LoaderService.loader.next(true);
-        this.getAssignedCoursesTeacher(localStorage.getItem('id'));
-      }
-    });
+    this.getCourses()
   }
   proceed() {
     this.modalReference.close();
@@ -166,7 +161,10 @@ export class StudentsComponent {
     } catch (error) {
       console.error(error);
     } finally {
-      await LoaderService.loader.next(false);
+      if (this.role === 'teacher') {
+        LoaderService.loader.next(true);
+        this.getAssignedCoursesTeacher(localStorage.getItem('id'));
+      }
     }
   }
   async getAssignedCourses(id: any) {
@@ -189,7 +187,6 @@ export class StudentsComponent {
     }
   }
   async getAssignedCoursesTeacher(id: any) {
-    LoaderService.loader.next(true);
     try {
       const courses = await this.contract.getTeacherAssignedCourses(id);
       const promises = courses.map((course: any) => {
@@ -219,10 +216,11 @@ export class StudentsComponent {
 
   async courseAssign() {
     if (this.selectedCourse) {
-      this.contract.assignCourseStudent(
+      await this.contract.assignCourseStudent(
         this.selectedStudentId,
         this.selectedCourse
       );
+      await this.getStudents()
     }
     this.selectedCourse = -1;
   }
@@ -239,6 +237,7 @@ export class StudentsComponent {
         _attendance: attendance,
       };
       await this.contract.markAttendance(data);
+      await this.getStudents()
       await this.proceed();
     }
   }

@@ -16,6 +16,7 @@ export class OverviewComponent {
   coursesLength!:string;
   studentsLength!:string;
   teachersLength!:string;
+  accountBalance!:string;
   constructor(private contract: ContractService, private cd: ChangeDetectorRef) {
     this.contract.connectWallet()
   }
@@ -24,6 +25,7 @@ export class OverviewComponent {
     this.getCourses()
     this.getStudents()
     this.getTeachers()
+    this.getBalalnce()
     this.observe()
   }
   async getCourses() {
@@ -33,6 +35,10 @@ export class OverviewComponent {
   async getStudents() {
     const students = await this.contract.getStudents()
     this.studentsLength = JSON.stringify(students?.length)
+  }
+  async getBalalnce() {
+    const balance = await this.contract.getContractBalance()
+    this.accountBalance = balance.toNumber();    
   }
   async getTeachers() {
     const teachers = await this.contract.getTeachers()

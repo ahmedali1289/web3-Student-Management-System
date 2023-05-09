@@ -5,7 +5,7 @@
       [height]="height" objectFit="contain"></app-image-wrapper>
       </div>
       <div class="flip-card-back">
-        <app-text tag="h1" [text]="heading" class="mb-0 text-center white capitalize"></app-text>
+        <app-text tag="h1" [text]="heading ? heading : '0'" class="mb-0 text-center white capitalize"></app-text>
         <p class="mb-0 text-center white capitalize">{{text}}</p>
       </div>
     </div>

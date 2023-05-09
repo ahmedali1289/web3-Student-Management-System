@@ -6,7 +6,7 @@ import { Component, ElementRef, Input, Renderer2 } from '@angular/core';
 })
 export class TextComponent {
   @Input() tag!: string;
-  @Input() text!: string;
+  @Input() text!: any;
   @Input() class!: string;
 
   constructor(private el: ElementRef, private renderer: Renderer2) { }
