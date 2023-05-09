@@ -35,15 +35,16 @@ export class StudentsComponent {
   @ViewChild('marksForm') marksForm!: FormComponent;
   subscription!: Subscription;
   searchInput = '';
-  marks!:any;
+  marks!: any;
   data: Student[] = [];
   selectedCourse = -1;
-  selectedStudent = -1;
+  selectedStudentId = -1;
+  selectedStudent!: any;
   courses: Course[] = [];
   originalCourses: Course[] = [];
   assignedCourses: AssignedCourse[] = [];
-  teacherAssignedCourse:any = [];
-  courseIndex!:number;
+  teacherAssignedCourse: any = [];
+  modalReference!: any;
   p = 1;
   role = localStorage.getItem('role');
   constructor(
@@ -53,7 +54,7 @@ export class StudentsComponent {
     private modalService: NgbModal,
     private helper: HelperService,
     private router: Router,
-    private toaster:ToastrService
+    private toaster: ToastrService
   ) {
     this.getStudents();
   }
@@ -66,10 +67,26 @@ export class StudentsComponent {
       }
     });
   }
+  proceed() {
+    this.modalReference.close();
+  }
   ngOnDestroy() {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
+  }
+  getCourseNamesByIds(ids: any) {
+    const idArray = ids.map((id: any) => id.toNumber());
+    const courseNames = [];
+    for (let i = 0; i < this.originalCourses.length; i++) {
+      const course = this.originalCourses[i];
+
+      if (idArray.includes(course.id)) {
+        courseNames.push(course.name);
+      }
+    }
+
+    return courseNames?.length ? courseNames : 'N/A';
   }
   async getStudents() {
     try {
@@ -80,17 +97,21 @@ export class StudentsComponent {
           .toPromise(),
       ]);
       this.data = students.map((student: any, index: number) => {
-        
-        const { id, name, age, studentaddress, number, attendance } = student;
+        const { id, name, age, studentaddress, number, attendance, courses } =
+          student;
         const { email, password } = res?.[index] ?? {};
+        console.log(attendance, 'attendance');
+
         return {
           id: id?.toNumber(),
           name,
           age: age?.toNumber(),
           address: studentaddress,
           number: number?.toNumber(),
-          attendance:attendance[0].toNumber(),
+          checkAttendance: attendance,
+          attendance: attendance?.[0]?.toNumber(),
           email,
+          courses: courses,
           password,
         };
       });
@@ -124,14 +145,16 @@ export class StudentsComponent {
     });
   }
   open(content: any) {
-    this.modalService
-      .open(content, { ariaLabelledBy: 'modal-basic-title' })
-      .result.then();
+    this.modalReference = this.modalService.open(content, {
+      centered: true,
+      backdrop: 'static',
+      windowClass: 'checkoutModal',
+    });
   }
   async getCourses() {
     try {
       const courses = await this.contract.getCourses();
-      this.courses = courses.map((course:any) => {
+      this.courses = courses.map((course: any) => {
         const [id, name, fee] = course;
         return {
           id: id?.toNumber(),
@@ -150,7 +173,7 @@ export class StudentsComponent {
     try {
       this.courses = this.originalCourses;
       const courses = await this.contract.getStudentAssignedCourses(id);
-      this.assignedCourses = courses.map((course:any) => ({
+      this.assignedCourses = courses.map((course: any) => ({
         id: course?.toNumber(),
       }));
       this.courses = this.courses.filter(
@@ -166,13 +189,16 @@ export class StudentsComponent {
     }
   }
   async getAssignedCoursesTeacher(id: any) {
-    LoaderService.loader.next(true)
+    LoaderService.loader.next(true);
     try {
       const courses = await this.contract.getTeacherAssignedCourses(id);
-      const promises = courses.map((course:any) => {this.getStudentsByCourseId(course.toNumber());this.teacherAssignedCourse = course.toNumber()});
-      if(this.role == 'teacher' && !courses?.length){
-    LoaderService.loader.next(false)
-        this.data = []
+      const promises = courses.map((course: any) => {
+        this.getStudentsByCourseId(course.toNumber());
+        this.teacherAssignedCourse = course.toNumber();
+      });
+      if (this.role == 'teacher' && !courses?.length) {
+        LoaderService.loader.next(false);
+        this.data = [];
       }
       await Promise.all(promises);
     } catch (error) {
@@ -194,48 +220,26 @@ export class StudentsComponent {
   async courseAssign() {
     if (this.selectedCourse) {
       this.contract.assignCourseStudent(
-        this.selectedStudent,
+        this.selectedStudentId,
         this.selectedCourse
       );
     }
     this.selectedCourse = -1;
   }
-  async giveMarks(formComponent: FormComponent) {
-    console.log(formComponent);
-    const formGroup:any = formComponent.formGroup.controls;
-    const marks = formGroup['Marks'].value;
-    if (!marks) {
-      this.toaster.error('Form Invalid!');
-      return;
-    }
-    else{
-      const data={_studentId:this.selectedStudent,
-        _marks:marks,
-        courseIndex:Number(this.courseIndex)
-      }
-      this.contract.addGrades(data)
-      console.log('====================================');
-      console.log(marks);
-      console.log('====================================');
-    }
-  }
-  async getIndex(){
-    this.courseIndex = await this.contract.getCourseIndex(this.teacherAssignedCourse);
-  }
   async assignAttendance(formComponent: FormComponent) {
     console.log(formComponent);
-    const formGroup:any = formComponent.formGroup.controls;
+    const formGroup: any = formComponent.formGroup.controls;
     const attendance = formGroup['Attendance'].value;
     if (!attendance) {
       this.toaster.error('Form Invalid!');
       return;
-    }
-    else{
-      const data={_studentId:this.selectedStudent,
-        _attendance:attendance,
-        courseIndex:Number(this.courseIndex)
-      }
-      this.contract.markAttendance(data)
+    } else {
+      const data = {
+        _studentId: this.selectedStudentId,
+        _attendance: attendance,
+      };
+      await this.contract.markAttendance(data);
+      await this.proceed();
     }
   }
 }

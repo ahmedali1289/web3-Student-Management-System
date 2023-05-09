@@ -216,24 +216,27 @@ contract StudentContract {
         emit Success("Teacher add successfully!");
     }
 
-    function markTeacherAttendance(uint256 _teacherId, uint256 _attendance)
-        public
-    {
-        bool teacherFound = false;
-        for (uint256 i = 0; i < teachers.length; i++) {
-            if (teachers[i].id == _teacherId) {
-                // Check if the attendance has already been marked for the teacher
-                require(
-                    teachers[i].attendance.length == 0 ||
-                        teachers[i].attendance[0] == 0
-                );
-                teachers[i].attendance.push(_attendance);
-                teacherFound = true;
+    function getFees(uint256 _studentId) public view returns (uint256) {
+        uint256 totalFee = 0;
+        uint256 studentIndex;
+        for (uint256 i = 0; i < students.length; i++) {
+            if (students[i].id == _studentId) {
+                studentIndex = i;
                 break;
             }
         }
-        // If teacher with the given ID is not found
-        require(teacherFound, "Teacher with the given ID not found");
+
+        // Calculate the total fee
+        for (uint256 j = 0; j < students[studentIndex].courses.length; j++) {
+            uint256 localCourseId = students[studentIndex].courses[j];
+            for (uint256 k = 0; k < courses.length; k++) {
+                if (courses[k].id == localCourseId) {
+                    totalFee += courses[k].fee;
+                    break;
+                }
+            }
+        }
+        return totalFee;
     }
 
     function assignCourseToStudent(uint256 _studentId, uint256 _courseId)
@@ -259,170 +262,6 @@ contract StudentContract {
         students[studentIndex].grades.push(0);
         students[studentIndex].attendance.push(0);
         emit Success("Course assigned successfully");
-    }
-
-    function assignCourseToTeacher(uint256 _teacherId, uint256 _courseId)
-        public
-    {
-        uint256 teacherIndex;
-        for (uint256 i = 0; i < teachers.length; i++) {
-            if (teachers[i].id == _teacherId) {
-                teacherIndex = i;
-                break;
-            }
-        }
-
-        // Check if the course has already been assigned to the student
-        for (uint256 j = 0; j < teachers[teacherIndex].courses.length; j++) {
-            if (teachers[teacherIndex].courses[j] == _courseId) {
-                require(false, "Course already assigned to this Teacher");
-            }
-        }
-
-        // Assign the course to the student
-        teachers[teacherIndex].courses.push(_courseId);
-        teachers[teacherIndex].attendance.push(0);
-        emit Success("Course assigned successfully");
-    }
-
-    function addGrades(
-        uint256 _studentId,
-        uint256 grade,
-        uint256 courseIndex
-    ) public {
-        require(msg.sender == admin);
-        for (uint256 i = 0; i < students.length; i++) {
-            if (students[i].id == _studentId) {
-                require(courseIndex < students[i].courses.length);
-                students[i].grades[courseIndex] = grade;
-            }
-        }
-    }
-
-    function markStudentAttendance(uint256 _studentId, uint256 _attendance)
-        public
-    {
-        bool studentFound = false;
-        for (uint256 i = 0; i < students.length; i++) {
-            if (students[i].id == _studentId) {
-                // Check if the attendance has already been marked for the student
-                require(
-                    students[i].attendance.length == 0 ||
-                        students[i].attendance[0] == 0
-                );
-                students[i].attendance.push(_attendance);
-                studentFound = true;
-                break;
-            }
-        }
-        // If student with the given ID is not found
-        require(studentFound, "Student with the given ID not found");
-    }
-
-    function getAllStudents() public view returns (StudentData[] memory) {
-        return students;
-    }
-
-    function getAllTeachers() public view returns (TeacherData[] memory) {
-        return teachers;
-    }
-
-    function getTeacher(uint256 _teacherId)
-        public
-        view
-        returns (TeacherData memory)
-    {
-        for (uint256 i = 0; i < teachers.length; i++) {
-            if (teachers[i].id == _teacherId) {
-                TeacherData memory teacherData = TeacherData({
-                    id: teachers[i].id,
-                    name: teachers[i].name,
-                    teacheraddress: teachers[i].teacheraddress,
-                    age: teachers[i].age,
-                    number: teachers[i].number,
-                    courses: teachers[i].courses,
-                    grades: teachers[i].grades,
-                    attendance: teachers[i].attendance,
-                    feeStatus: teachers[i].feeStatus
-                });
-                return (teacherData);
-            }
-        }
-    }
-
-    function getStudent(uint256 _studentId)
-        public
-        view
-        returns (StudentData memory)
-    {
-        for (uint256 i = 0; i < students.length; i++) {
-            if (students[i].id == _studentId) {
-                StudentData memory studentData = StudentData({
-                    id: students[i].id,
-                    name: students[i].name,
-                    studentaddress: students[i].studentaddress,
-                    age: students[i].age,
-                    number: students[i].number,
-                    courses: students[i].courses,
-                    grades: students[i].grades,
-                    attendance: students[i].attendance,
-                    feeStatus: students[i].feeStatus
-                });
-                return (studentData);
-            }
-        }
-    }
-
-    function getStudentAssignedCourses(uint256 _studentId)
-        public
-        view
-        returns (uint256[] memory)
-    {
-        for (uint256 i = 0; i < students.length; i++) {
-            if (students[i].id == _studentId) {
-                return (students[i].courses);
-            }
-        }
-    }
-
-    function getTeacherAssignedCourses(uint256 _teacherId)
-        public
-        view
-        returns (uint256[] memory)
-    {
-        for (uint256 i = 0; i < teachers.length; i++) {
-            if (teachers[i].id == _teacherId) {
-                return (teachers[i].courses);
-            }
-        }
-    }
-
-    function getAssignedCoursesWithGrades(uint256 _studentId)
-        public
-        view
-        returns (uint256[] memory, uint256[] memory)
-    {
-        for (uint256 i = 0; i < students.length; i++) {
-            if (students[i].id == _studentId) {
-                return (students[i].courses, students[i].grades);
-            }
-        }
-    }
-
-    function getContractBalance() public view returns (uint256) {
-        return address(this).balance;
-    }
-
-    function checkTotalFee(uint256 _studentId) public view returns (uint256) {
-        uint256 totalFee = 0;
-        for (uint256 i = 0; i < students.length; i++) {
-            if (students[i].id == _studentId) {
-                for (uint256 j = 0; j < students[i].courses.length; j++) {
-                    totalFee += courses[i].fee;
-                }
-            }
-        }
-        return totalFee;
     }
 
     function payCoursesFees(uint256 _studentId) public payable {
@@ -456,6 +295,121 @@ contract StudentContract {
         }
     }
 
+    function assignCourseToTeacher(uint256 _teacherId, uint256 _courseId)
+        public
+    {
+        uint256 teacherIndex;
+        for (uint256 i = 0; i < teachers.length; i++) {
+            if (teachers[i].id == _teacherId) {
+                teacherIndex = i;
+                break;
+            }
+        }
+
+        // Check if the course has already been assigned to the student
+        for (uint256 j = 0; j < teachers[teacherIndex].courses.length; j++) {
+            if (teachers[teacherIndex].courses[j] == _courseId) {
+                require(false, "Course already assigned to this Teacher");
+            }
+        }
+
+        // Assign the course to the student
+        teachers[teacherIndex].courses.push(_courseId);
+        teachers[teacherIndex].attendance.push(0);
+        emit Success("Course assigned successfully");
+    }
+
+    function markStudentAttendance(uint256 _studentId, uint256 _attendance)
+        public
+    {
+        bool studentFound = false;
+        for (uint256 i = 0; i < students.length; i++) {
+            if (students[i].id == _studentId) {
+                // Check if the attendance has already been marked for the student
+                require(
+                    students[i].attendance.length == 0 ||
+                        students[i].attendance[0] == 0
+                );
+                delete students[i].attendance;
+                // Push the new attendance record
+                students[i].attendance.push(_attendance);
+                studentFound = true;
+                break;
+            }
+        }
+        // If student with the given ID is not found
+        require(studentFound, "Student with the given ID not found");
+    }
+
+    function markTeacherAttendance(uint256 _teacherId, uint256 _attendance)
+        public
+    {
+        bool teacherFound = false;
+        for (uint256 i = 0; i < teachers.length; i++) {
+            if (teachers[i].id == _teacherId) {
+                // Check if the attendance has already been marked for the teacher
+                require(
+                    teachers[i].attendance.length == 0 ||
+                        teachers[i].attendance[0] == 0
+                );
+                delete teachers[i].attendance;
+                teachers[i].attendance.push(_attendance);
+                teacherFound = true;
+                break;
+            }
+        }
+        // If teacher with the given ID is not found
+        require(teacherFound, "Teacher with the given ID not found");
+    }
+
+    function getAllStudents() public view returns (StudentData[] memory) {
+        return students;
+    }
+
+    function getAllTeachers() public view returns (TeacherData[] memory) {
+        return teachers;
+    }
+
+    function getStudentAssignedCourses(uint256 _studentId)
+        public
+        view
+        returns (uint256[] memory)
+    {
+        for (uint256 i = 0; i < students.length; i++) {
+            if (students[i].id == _studentId) {
+                return (students[i].courses);
+            }
+        }
+    }
+
+    function getTeacherAssignedCourses(uint256 _teacherId)
+        public
+        view
+        returns (uint256[] memory)
+    {
+        for (uint256 i = 0; i < teachers.length; i++) {
+            if (teachers[i].id == _teacherId) {
+                return (teachers[i].courses);
+            }
+        }
+    }
+
+    function getContractBalance() public view returns (uint256) {
+        return address(this).balance;
+    }
+
+    function checkTotalFee(uint256 _studentId) public view returns (uint256) {
+        uint256 totalFee = 0;
+        for (uint256 i = 0; i < students.length; i++) {
+            if (students[i].id == _studentId) {
+                for (uint256 j = 0; j < students[i].courses.length; j++) {
+                    totalFee += courses[i].fee;
+                }
+            }
+        }
+        return totalFee;
+    }
+
     function viewCourses() public view returns (Course[] memory) {
         return (courses);
     }
@@ -484,6 +438,29 @@ contract StudentContract {
         }
 
         return result;
+    }
+
+    function getStudent(uint256 _studentId)
+        public
+        view
+        returns (StudentData memory)
+    {
+        for (uint256 i = 0; i < students.length; i++) {
+            if (students[i].id == _studentId) {
+                StudentData memory studentData = StudentData({
+                    id: students[i].id,
+                    name: students[i].name,
+                    studentaddress: students[i].studentaddress,
+                    age: students[i].age,
+                    number: students[i].number,
+                    courses: students[i].courses,
+                    grades: students[i].grades,
+                    attendance: students[i].attendance,
+                    feeStatus: students[i].feeStatus
+                });
+                return (studentData);
+            }
+        }
     }
 
     function getTeachersByCourseId(uint256 courseId)

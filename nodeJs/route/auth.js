@@ -95,16 +95,16 @@ router.post("/signup", async (req, res) => {
       </body>
     </html>`;
 
-    apiInstance.sendTransacEmail(sendSmtpEmail).then(
-      function (data) {
-        console.log(
-          "API called successfully. Returned data: " + JSON.stringify(data)
-        );
-      },
-      function (error) {
-        console.error(error);
-      }
-    );
+    // apiInstance.sendTransacEmail(sendSmtpEmail).then(
+    //   function (data) {
+    //     console.log(
+    //       "API called successfully. Returned data: " + JSON.stringify(data)
+    //     );
+    //   },
+    //   function (error) {
+    //     console.error(error);
+    //   }
+    // );
     const user = await User.create(userData);
     res.status(200).json({ status: "User created!", user });
   } catch (error) {
@@ -158,11 +158,6 @@ router.post("/login", async (req, res) => {
     if (user.role == "teacher") {
       routes = [
         {
-          route: "attendance",
-          name: "Attendance",
-          icon: "fa-books",
-        },
-        {
           route: "courses",
           name: "Courses",
           icon: "fa-books",
@@ -181,11 +176,6 @@ router.post("/login", async (req, res) => {
     }
     if (user.role == "student") {
       routes = [
-        {
-          route: "attendance",
-          name: "Attendance",
-          icon: "fa-books",
-        },
         {
           route: "courses",
           name: "Courses",

@@ -22,6 +22,8 @@ export class CoursesComponent {
   courses: Course[] = [];
   assignedCourses: assignedCourse[] = [];
   role!: string;
+  fees!: any;
+  myData!:any;
   async ngOnInit() {
     this.role = (await localStorage.getItem('role')) as string;
     await this.observe();
@@ -37,8 +39,11 @@ export class CoursesComponent {
   async getCourses() {
     try {
       const courses = await this.contract.getCourses();
-      if (courses) {
-        await this.getAssignedCourses(localStorage.getItem('id'));
+      if(this.role != 'admin'){
+        if (courses) {
+          const id = localStorage.getItem('id')
+          await this.getAssignedCourses(id);
+        }
       }
       const newCourses =
         courses?.map((course: any) => {
@@ -56,8 +61,12 @@ export class CoursesComponent {
         const matchSubjects: any = this.getMatchingSubjects(
           this.courses,
           this.assignedCourses
-        );
-        this.courses = matchSubjects;
+          );
+          this.courses = matchSubjects;
+          if(this.courses?.length){
+            await this.getFees(localStorage.getItem('id'))
+            await this.getStudent(localStorage.getItem('id'))
+          }
       } else {
         const matchSubjects: any = this.getMatchingSubjects(
           this.courses,
@@ -90,6 +99,24 @@ export class CoursesComponent {
     } finally {
       await LoaderService.loader.next(false);
     }
+  }
+  async getFees(id: any) {
+    try {
+      const fees = await this.contract.getFees(id);
+      this.fees = Number(fees)
+      console.log(this.fees);
+
+    } catch (error) {
+      console.error(error);
+    } finally {
+      await LoaderService.loader.next(false);
+    }
+  }
+  async getStudent(id:any){
+    await this.contract.getStudent(id);
+  }
+  pay(){
+    this.contract.payCoursesFees(localStorage.getItem('id'),this.fees)
   }
   route() {
     UniversalService.header.next('Add Course');

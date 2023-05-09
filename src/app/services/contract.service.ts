@@ -5,9 +5,9 @@ import { ethers } from 'ethers';
 import { HelperService } from './helper.service';
 import { LoaderService } from './loader.service';
 import { UniversalService } from './universal.service';
-import { ApiService } from '../services/api.service'
+import { ApiService } from '../services/api.service';
 import { Subscription } from 'rxjs';
-const CONTRACT_ADDRESS = '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0';
+const CONTRACT_ADDRESS = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
 const ABI = [
 	{
 		"inputs": [],
@@ -128,29 +128,6 @@ const ABI = [
 			}
 		],
 		"name": "addCourse",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_studentId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "grade",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "courseIndex",
-				"type": "uint256"
-			}
-		],
-		"name": "addGrades",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -429,30 +406,6 @@ const ABI = [
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_studentId",
-				"type": "uint256"
-			}
-		],
-		"name": "getAssignedCoursesWithGrades",
-		"outputs": [
-			{
-				"internalType": "uint256[]",
-				"name": "",
-				"type": "uint256[]"
-			},
-			{
-				"internalType": "uint256[]",
-				"name": "",
-				"type": "uint256[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
 		"inputs": [],
 		"name": "getContractBalance",
 		"outputs": [
@@ -469,11 +422,11 @@ const ABI = [
 		"inputs": [
 			{
 				"internalType": "uint256",
-				"name": "courseId",
+				"name": "_studentId",
 				"type": "uint256"
 			}
 		],
-		"name": "getCourseIndex",
+		"name": "getFees",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -596,72 +549,6 @@ const ABI = [
 				"type": "uint256"
 			}
 		],
-		"name": "getTeacher",
-		"outputs": [
-			{
-				"components": [
-					{
-						"internalType": "string",
-						"name": "name",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "teacheraddress",
-						"type": "string"
-					},
-					{
-						"internalType": "uint256",
-						"name": "age",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "number",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "id",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256[]",
-						"name": "courses",
-						"type": "uint256[]"
-					},
-					{
-						"internalType": "uint256[]",
-						"name": "grades",
-						"type": "uint256[]"
-					},
-					{
-						"internalType": "uint256[]",
-						"name": "attendance",
-						"type": "uint256[]"
-					},
-					{
-						"internalType": "bool",
-						"name": "feeStatus",
-						"type": "bool"
-					}
-				],
-				"internalType": "struct StudentContract.TeacherData",
-				"name": "",
-				"type": "tuple"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_teacherId",
-				"type": "uint256"
-			}
-		],
 		"name": "getTeacherAssignedCourses",
 		"outputs": [
 			{
@@ -703,14 +590,27 @@ const ABI = [
 				"internalType": "uint256",
 				"name": "_attendance",
 				"type": "uint256"
+			}
+		],
+		"name": "markStudentAttendance",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_teacherId",
+				"type": "uint256"
 			},
 			{
 				"internalType": "uint256",
-				"name": "courseIndex",
+				"name": "_attendance",
 				"type": "uint256"
 			}
 		],
-		"name": "markAttendance",
+		"name": "markTeacherAttendance",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -894,312 +794,382 @@ const ABI = [
 ]
 declare let window: any;
 @Injectable({
-	providedIn: 'root'
+  providedIn: 'root',
 })
 export class ContractService {
-	private subscription!: Subscription;
-	constructor(private router: Router, private helper: HelperService, private modalService: NgbModal, private http: ApiService) { }
+  private subscription!: Subscription;
+  constructor(
+    private router: Router,
+    private helper: HelperService,
+    private modalService: NgbModal,
+    private http: ApiService
+  ) {}
 
-	ngOnDestroy() {
-		if (this.subscription) {
-			this.subscription.unsubscribe();
-		}
-	}
+  ngOnDestroy() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+  }
 
-	async connectWallet() {
-		if (window.ethereum) {
-			try {
-				const accounts = await window.ethereum.request({
-					method: "eth_requestAccounts",
-				});
-				if (accounts) {
-					console.log(accounts);
-					// this.addStudent()
-					// this.getStudents()
-				} else {
-					console.log("connect metamask Account");
-				}
-			} catch (error) {
-				console.log(error);
-			}
-		}
-	};
-	async getCourses() {
-		try {
-			const provider = new ethers.providers.Web3Provider(window.ethereum);
-			const signer = provider.getSigner();
-			const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
-			const result = await contract;
-			const courses = await result['viewCourses']()
-			console.log(courses);
-			return courses;
-		} catch (error: any) {
-			console.log("Error calling contract function:", error);
-			console.log(this.helper.extractErrorMessage(error?.message))
-
-		}
-	}
-	async getCourseIndex(_courseId:number) {
-		try {
-			const provider = new ethers.providers.Web3Provider(window.ethereum);
-			const signer = provider.getSigner();
-			const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
-			const result = await contract;
-			const courses = await result['getCourseIndex'](_courseId)
-			console.log(courses);
-
-			return courses;
-		} catch (error: any) {
-			console.log("Error calling contract function:", error);
-			console.log(this.helper.extractErrorMessage(error?.message))
-
-		}
-	}
-	async getStudentAssignedCourses(_studentId: number) {
-		try {
-			const provider = new ethers.providers.Web3Provider(window.ethereum);
-			const signer = provider.getSigner();
-			const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
-			const result = await contract;
-			const courses = await result['getStudentAssignedCourses'](_studentId)
-			console.log(courses);
-			return courses;
-		} catch (error: any) {
-			console.log("Error calling contract function:", error);
-			console.log(this.helper.extractErrorMessage(error?.message))
-
-		}
-	}
-	async getTeacherAssignedCourses(_studentId: number) {
-		try {
-			const provider = new ethers.providers.Web3Provider(window.ethereum);
-			const signer = provider.getSigner();
-			const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
-			const result = await contract;
-			const courses = await result['getTeacherAssignedCourses'](_studentId)
-			console.log(courses);
-			return courses;
-		} catch (error: any) {
-			console.log("Error calling contract function:", error);
-			console.log(this.helper.extractErrorMessage(error?.message))
-
-		}
-	}
+  async connectWallet() {
+    if (window.ethereum) {
+      try {
+        const accounts = await window.ethereum.request({
+          method: 'eth_requestAccounts',
+        });
+        if (accounts) {
+          console.log(accounts);
+          // this.addStudent()
+          // this.getStudents()
+        } else {
+          console.log('connect metamask Account');
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
+  async getCourses() {
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+      const result = await contract;
+      const courses = await result['viewCourses']();
+      console.log(courses);
+      return courses;
+    } catch (error: any) {
+      console.log('Error calling contract function:', error);
+      console.log(this.helper.extractErrorMessage(error?.message));
+    }
+  }
+  async getStudentAssignedCourses(_studentId: number) {
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+      const result = await contract;
+      const courses = await result['getStudentAssignedCourses'](_studentId);
+      console.log(courses);
+      return courses;
+    } catch (error: any) {
+      console.log('Error calling contract function:', error);
+      console.log(this.helper.extractErrorMessage(error?.message));
+    }
+  }
+  async getTeacherAssignedCourses(_studentId: number) {
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+      const result = await contract;
+      const courses = await result['getTeacherAssignedCourses'](_studentId);
+      console.log(courses);
+      return courses;
+    } catch (error: any) {
+      console.log('Error calling contract function:', error);
+      console.log(this.helper.extractErrorMessage(error?.message));
+    }
+  }
   async getStudentsByCourseId(_courseId: number) {
-		try {
-			const provider = new ethers.providers.Web3Provider(window.ethereum);
-			const signer = provider.getSigner();
-			const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
-			const result = await contract;
-			const courses = await result['getStudentsByCourseId'](_courseId)
-			console.log(courses);
-			return courses;
-		} catch (error: any) {
-			console.log("Error calling contract function:", error);
-			console.log(this.helper.extractErrorMessage(error?.message))
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+      const result = await contract;
+      const courses = await result['getStudentsByCourseId'](_courseId);
+      console.log(courses);
+      return courses;
+    } catch (error: any) {
+      console.log('Error calling contract function:', error);
+      console.log(this.helper.extractErrorMessage(error?.message));
+    }
+  }
+  async addCourse(data: any) {
+    LoaderService.loader.next(true);
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+      const result = await contract;
+      const courses = await result['addCourse'](
+        data?.courseName,
+        data?.courseFee
+      );
+      await courses.wait();
+      console.log(courses);
+      this.router.navigateByUrl('dashboard/courses');
+      await UniversalService.header.next('Courses');
+      await UniversalService.AddCourse.next(true);
+      await LoaderService.loader.next(false);
+      await this.helper.showSuccess('Course added successfully');
+    } catch (error: any) {
+      LoaderService.loader.next(false);
+      if (this.helper.extractErrorMessage(error?.message)) {
+        this.helper.showError(this.helper.extractErrorMessage(error?.message));
+      }
+    }
+  }
+  async markAttendance(data: any) {
+    LoaderService.loader.next(true);
+    console.log(data);
 
-		}
-	}
-	async addCourse(data: any) {
-		LoaderService.loader.next(true)
-		try {
-			const provider = new ethers.providers.Web3Provider(window.ethereum);
-			const signer = provider.getSigner();
-			const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
-			const result = await contract;
-			const courses = await result['addCourse'](data?.courseName, data?.courseFee)
-			await courses.wait();
-			console.log(courses);
-			this.router.navigateByUrl('dashboard/courses')
-			await UniversalService.header.next("Courses")
-			await UniversalService.AddCourse.next(true)
-			await LoaderService.loader.next(false)
-			await this.helper.showSuccess("Course added successfully")
-		} catch (error: any) {
-			LoaderService.loader.next(false)
-			if (this.helper.extractErrorMessage(error?.message)) {
-				this.helper.showError(this.helper.extractErrorMessage(error?.message))
-			}
-		}
-	}
-	async markAttendance(data: any) {
-		LoaderService.loader.next(true)
-		console.log(data);
-		
-		try {
-			const provider = new ethers.providers.Web3Provider(window.ethereum);
-			const signer = provider.getSigner();
-			const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
-			const result = await contract;
-			const courses = await result['markAttendance'](data?._studentId, data?._attendance, data?.courseIndex)
-			await courses.wait();
-			await UniversalService.AddStudent.next(true);
-			await LoaderService.loader.next(false)
-			await this.helper.showSuccess("Attendance marked successfully")
-		} catch (error: any) {
-			console.log(error);
-			LoaderService.loader.next(false)
-			if (this.helper.extractErrorMessage(error?.message)) {
-				this.helper.showError(this.helper.extractErrorMessage(error?.message))
-			}
-		}
-	}
-	async addGrades(data: any) {
-		LoaderService.loader.next(true)
-		console.log(data);
-		
-		try {
-			const provider = new ethers.providers.Web3Provider(window.ethereum);
-			const signer = provider.getSigner();
-			const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
-			const result = await contract;
-			const courses = await result['addGrades'](data?._studentId, data?._marks, data?.courseIndex)
-			await courses.wait();
-			await UniversalService.AddStudent.next(true);
-			await LoaderService.loader.next(false)
-			await this.helper.showSuccess("Attendance marked successfully")
-		} catch (error: any) {
-			console.log(error);
-			LoaderService.loader.next(false)
-			if (this.helper.extractErrorMessage(error?.message)) {
-				this.helper.showError(this.helper.extractErrorMessage(error?.message))
-			}
-		}
-	}
-	async getStudents() {
-		try {
-			const provider = new ethers.providers.Web3Provider(window.ethereum);
-			const signer = provider.getSigner();
-			const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
-			const result = await contract;
-			const students = await result['getAllStudents']()
-			console.log(students);
-			return students;
-		} catch (error: any) {
-			console.log("Error calling contract function:", error);
-			console.log(this.helper.extractErrorMessage(error?.message))
-
-		}
-	}
-	async getTeachers() {
-		try {
-			const provider = new ethers.providers.Web3Provider(window.ethereum);
-			const signer = provider.getSigner();
-			const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
-			const result = await contract;
-			const teachers = await result['getAllTeachers']()
-			return teachers;
-		} catch (error: any) {
-			console.log("Error calling contract function:", error);
-			console.log(this.helper.extractErrorMessage(error?.message))
-
-		}
-	}
-	async addStudent(name: string, email:string, address: string, age: number, number: number) {
-		LoaderService.loader.next(true);
-		try {
-			const provider = new ethers.providers.Web3Provider(window.ethereum);
-			const signer = provider.getSigner();
-			const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
-			const result = await contract;
-			const students = await result['addStudent'](name, address, age, number);
-			const student = await students.wait();
-			const { id, message } = student.events?.reduce(
-				(acc: any, event: any) => ({
-					id: event.args?.id?.toNumber() ?? acc.id,
-					message: event.args?.message ?? acc.message
-				}),
-				{}
-			);
-			const firstName = name?.split(' ')?.[0]?.toLowerCase() ?? name?.toLowerCase();
-			await this.http
-				.postMethod(
-					`http://localhost:3000/api/auth/signup?name=${firstName}&email=${email}&role=student&id=${id}`,
-					{},
-					true
-				)
-				.subscribe((res) => {
-					console.log(res);
-				}, (err) => {
-					console.log(err);
-				});
-			await UniversalService.header.next('Students');
-			await UniversalService.AddStudent.next(true);
-			await this.helper.showSuccess(message);
-		} catch (error: any) {
-			if (this.helper.extractErrorMessage(error?.message)) {
-				this.helper.showError(this.helper.extractErrorMessage(error?.message));
-			}
-		} finally {
-			await LoaderService.loader.next(false);
-			this.router.navigateByUrl('dashboard/students');
-		}
-	}
-	async addTeacher(name: string, address: string, age: number, number: number) {
-		LoaderService.loader.next(true)
-		try {
-			const provider = new ethers.providers.Web3Provider(window.ethereum);
-			const signer = provider.getSigner();
-			const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
-			const result = await contract;
-			const teachers = await result['addTeacher'](name, address, age, number)
-			const teacher = await teachers.wait();
-			const id = teacher?.events?.[0]?.args?.id?.toNumber()
-			const message = teacher?.events?.[1]?.args?.message
-			console.log(teacher)
-			this.router.navigateByUrl('dashboard/teachers')
-			this.subscription = await this.http.postMethod(`http://localhost:3000/api/auth/signup?email=${name.split(' ')[0]?.toLowerCase()}@sms.com&role=teacher&id=${id}`, {}, true).subscribe(res => {
-				console.log(res);
-			}, err => {
-				console.log(err);
-			})
-			await UniversalService.header.next("Teachers")
-			await UniversalService.AddTeachers.next(true)
-			await LoaderService.loader.next(false)
-			await this.helper.showSuccess(message)
-		} catch (error: any) {
-			LoaderService.loader.next(false)
-			if (this.helper.extractErrorMessage(error?.message)) {
-				this.helper.showError(this.helper.extractErrorMessage(error?.message))
-			}
-		}
-	}
-	async assignCourseStudent(id: number, courseId: number) {
-		LoaderService.loader.next(true)
-		try {
-			const provider = new ethers.providers.Web3Provider(window.ethereum);
-			const signer = provider.getSigner();
-			const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
-			const result = await contract;
-			const students = await result['assignCourseToStudent'](id, courseId)
-			students.wait();
-			await this.modalService.dismissAll()
-			await LoaderService.loader.next(false)
-			await this.helper.showSuccess("Course assigned successfully")
-		} catch (error: any) {
-			LoaderService.loader.next(false)
-			if (this.helper.extractErrorMessage(error?.message)) {
-				this.helper.showError(this.helper.extractErrorMessage(error?.message))
-			}
-		}
-	}
-	async assignCourseTeacher(id: number, courseId: number) {
-		LoaderService.loader.next(true)
-		try {
-			const provider = new ethers.providers.Web3Provider(window.ethereum);
-			const signer = provider.getSigner();
-			const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
-			const result = await contract;
-			const teachers = await result['assignCourseToTeacher'](id, courseId)
-			teachers.wait();
-			await this.modalService.dismissAll()
-			await LoaderService.loader.next(false)
-			await this.helper.showSuccess("Course assigned successfully")
-		} catch (error: any) {
-			LoaderService.loader.next(false)
-			if (this.helper.extractErrorMessage(error?.message)) {
-				this.helper.showError(this.helper.extractErrorMessage(error?.message))
-			}
-		}
-	}
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+      const result = await contract;
+      const courses = await result['markStudentAttendance'](
+        data?._studentId,
+        data?._attendance
+      );
+      await courses.wait();
+      await UniversalService.AddStudent.next(true);
+      await LoaderService.loader.next(false);
+      await this.helper.showSuccess('Attendance marked successfully');
+    } catch (error: any) {
+      console.log(error);
+      LoaderService.loader.next(false);
+      if (this.helper.extractErrorMessage(error?.message)) {
+        this.helper.showError(this.helper.extractErrorMessage(error?.message));
+      }
+    }
+  }
+  async teacherMarkAttendance(data: any) {
+    LoaderService.loader.next(true);
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+      const result = await contract;
+      const courses = await result['markTeacherAttendance'](
+        data?._studentId,
+        data?._attendance
+      );
+      await courses.wait();
+      await UniversalService.AddTeachers.next(true);
+      await LoaderService.loader.next(false);
+      await this.helper.showSuccess('Attendance marked successfully');
+    } catch (error: any) {
+      console.log(error);
+      LoaderService.loader.next(false);
+      if (this.helper.extractErrorMessage(error?.message)) {
+        this.helper.showError(this.helper.extractErrorMessage(error?.message));
+      }
+    }
+  }
+  async getStudents() {
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+      const result = await contract;
+      const students = await result['getAllStudents']();
+      console.log(students);
+      return students;
+    } catch (error: any) {
+      console.log('Error calling contract function:', error);
+      console.log(this.helper.extractErrorMessage(error?.message));
+    }
+  }
+  async getStudent(_studentId:any) {
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+      const result = await contract;
+      const student = await result['getStudent'](_studentId);
+      console.log(student);
+      return student;
+    } catch (error: any) {
+      console.log('Error calling contract function:', error);
+      console.log(this.helper.extractErrorMessage(error?.message));
+    }
+  }
+  async getTeachers() {
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+      const result = await contract;
+      const teachers = await result['getAllTeachers']();
+      return teachers;
+    } catch (error: any) {
+      console.log('Error calling contract function:', error);
+      console.log(this.helper.extractErrorMessage(error?.message));
+    }
+  }
+  async getFees(_studentId: any) {
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+      const result = await contract;
+      const fees = await result['getFees'](_studentId);
+      return fees;
+    } catch (error: any) {
+      console.log('Error calling contract function:', error);
+      console.log(this.helper.extractErrorMessage(error?.message));
+    }
+  }
+  async payCoursesFees(id: any, value: any) {
+    console.log(value);
+    LoaderService.loader.next(true);
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract: any = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+      const totalFees = await contract.getFees(id);
+      const result = await contract.payCoursesFees(id, { value: totalFees });
+      const fee = await result.wait();
+      console.log(fee);
+      await this.helper.showSuccess('Fees Payed Successfully');
+    } catch (error: any) {
+      if (this.helper.extractErrorMessage(error?.message)) {
+        this.helper.showError(this.helper.extractErrorMessage(error?.message));
+      }
+    } finally {
+      await LoaderService.loader.next(false);
+    }
+  }
+  async addStudent(
+    name: string,
+    email: string,
+    address: string,
+    age: number,
+    number: number
+  ) {
+    LoaderService.loader.next(true);
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+      const result = await contract;
+      const students = await result['addStudent'](name, address, age, number);
+      const student = await students.wait();
+      const { id, message } = student.events?.reduce(
+        (acc: any, event: any) => ({
+          id: event.args?.id?.toNumber() ?? acc.id,
+          message: event.args?.message ?? acc.message,
+        }),
+        {}
+      );
+      const firstName =
+        name?.split(' ')?.[0]?.toLowerCase() ?? name?.toLowerCase();
+      await this.http
+        .postMethod(
+          `http://localhost:3000/api/auth/signup?name=${firstName}&email=${email}&role=student&id=${id}`,
+          {},
+          true
+        )
+        .subscribe(
+          (res) => {
+            console.log(res);
+          },
+          (err) => {
+            console.log(err);
+          }
+        );
+      await UniversalService.header.next('Students');
+      await UniversalService.AddStudent.next(true);
+      await this.helper.showSuccess(message);
+    } catch (error: any) {
+      if (this.helper.extractErrorMessage(error?.message)) {
+        this.helper.showError(this.helper.extractErrorMessage(error?.message));
+      }
+    } finally {
+      await LoaderService.loader.next(false);
+      this.router.navigateByUrl('dashboard/students');
+    }
+  }
+  async addTeacher(
+    name: string,
+    email: string,
+    address: string,
+    age: number,
+    number: number
+  ) {
+    LoaderService.loader.next(true);
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+      const result = await contract;
+      const students = await result['addTeacher'](name, address, age, number);
+      const student = await students.wait();
+      const { id, message } = student.events?.reduce(
+        (acc: any, event: any) => ({
+          id: event.args?.id?.toNumber() ?? acc.id,
+          message: event.args?.message ?? acc.message,
+        }),
+        {}
+      );
+      const firstName =
+        name?.split(' ')?.[0]?.toLowerCase() ?? name?.toLowerCase();
+      await this.http
+        .postMethod(
+          `http://localhost:3000/api/auth/signup?name=${firstName}&email=${email}&role=teacher&id=${id}`,
+          {},
+          true
+        )
+        .subscribe(
+          (res) => {
+            console.log(res);
+          },
+          (err) => {
+            console.log(err);
+          }
+        );
+      await UniversalService.header.next('Teachers');
+      await UniversalService.AddTeachers.next(true);
+      await this.helper.showSuccess(message);
+    } catch (error: any) {
+      if (this.helper.extractErrorMessage(error?.message)) {
+        this.helper.showError(this.helper.extractErrorMessage(error?.message));
+      }
+    } finally {
+      await LoaderService.loader.next(false);
+      this.router.navigateByUrl('dashboard/teachers');
+    }
+  }
+  async assignCourseStudent(id: number, courseId: number) {
+    LoaderService.loader.next(true);
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+      const result = await contract;
+      const students = await result['assignCourseToStudent'](id, courseId);
+      students.wait();
+      await this.modalService.dismissAll();
+      await LoaderService.loader.next(false);
+      await UniversalService.AddStudent.next(true);
+      await this.helper.showSuccess('Course assigned successfully');
+    } catch (error: any) {
+      LoaderService.loader.next(false);
+      if (this.helper.extractErrorMessage(error?.message)) {
+        this.helper.showError(this.helper.extractErrorMessage(error?.message));
+      }
+    }
+  }
+  async assignCourseTeacher(id: number, courseId: number) {
+    LoaderService.loader.next(true);
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+      const result = await contract;
+      const teachers = await result['assignCourseToTeacher'](id, courseId);
+      teachers.wait();
+      await this.modalService.dismissAll();
+      await LoaderService.loader.next(false);
+      await UniversalService.AddTeachers.next(true);
+      await this.helper.showSuccess('Course assigned successfully');
+    } catch (error: any) {
+      LoaderService.loader.next(false);
+      if (this.helper.extractErrorMessage(error?.message)) {
+        this.helper.showError(this.helper.extractErrorMessage(error?.message));
+      }
+    }
+  }
 }
